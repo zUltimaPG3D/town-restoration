@@ -264,6 +264,20 @@ void* NTException$$_ctor(void* instance, int result, il2cppString* message)
 	return old_NTException$$_ctor(instance, result, message);
 }
 
+void (*old_PushAPI$$__Internal$$OnRegisterToken)(bool success, il2cppString* pushToken);
+void PushAPI$$__Internal$$OnRegisterToken(bool success, il2cppString* pushToken)
+{
+	LOGI("PushAPI OnRegisterToken call, pushToken %s, success %s", pushToken->getString().c_str(), (success ? "Y" : "N"));
+	return old_PushAPI$$__Internal$$OnRegisterToken(success, pushToken);
+}
+
+void (*old_CommonAPI$$__Internal$$OnRegisterToken)(il2cppString* pushToken);
+void CommonAPI$$__Internal$$OnRegisterToken(il2cppString* pushToken)
+{
+	LOGI("CommonAPI OnRegisterToken call, pushToken %s", pushToken->getString().c_str());
+	return old_CommonAPI$$__Internal$$OnRegisterToken(pushToken);
+}
+
 void hooks()
 {
 	HOOK_NO_ORIG("0xC1C7C0", GetDomainURL);
@@ -275,6 +289,8 @@ void hooks()
 	HOOK("0x2CAC920", THISISATESTANDITWILLBEREPLACEDWITHOTHERTHINGS, old_THISISATESTANDITWILLBEREPLACEDWITHOTHERTHINGS);
 	//HOOK_NO_ORIG("0xC0DBF8", GetGameServerID);
 	HOOK_NO_ORIG("0x2867180", IsDummy);
+	HOOK("0x270EAF0", PushAPI$$__Internal$$OnRegisterToken, old_PushAPI$$__Internal$$OnRegisterToken);
+	HOOK("0xC23964", CommonAPI$$__Internal$$OnRegisterToken, old_CommonAPI$$__Internal$$OnRegisterToken);
 	//HOOK_NO_ORIG("0xC1C188", IsGetVersionInfo);
 	//HOOK("0xC1E924", RequestGameServerList, old_RequestGameServerList);
 	//HOOK("0xC1DD54", CommonAPI_RequestVersion, old_CommonAPI_RequestVersion);
