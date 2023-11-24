@@ -135,25 +135,19 @@ il2cppString* GetDomainURL(il2cppString* keyName)
 	return CreateIl2CppString("http://localhost:15151/"); // not good if you're running a blockheads server on the device 🔥
 }
 
-void (*old_NTDebugLogHook)(void* message);
 void NTDebugLogHook(void* message)
 {
-	LOGI("%s", ToString(message)->getString().c_str());
-	return old_NTDebugLogHook(message);
+	((void(*)(void*))POINTER_NOSEMICOLON("0x11D8160"))(message);
 }
 
-void (*old_WarningNTDebugLogHook)(void* message);
 void WarningNTDebugLogHook(void* message)
 {
-	LOGW("%s", ToString(message)->getString().c_str());
-	return old_WarningNTDebugLogHook(message);
+	((void(*)(void*))POINTER_NOSEMICOLON("0x11D0D4C"))(message);
 }
 
-void (*old_ErrorNTDebugLogHook)(void* message);
 void ErrorNTDebugLogHook(void* message)
 {
-	LOGE("%s", ToString(message)->getString().c_str());
-	return old_ErrorNTDebugLogHook(message);
+	((void(*)(void*))POINTER_NOSEMICOLON("0x11D85E4"))(message);
 }
 
 int glHeight, glWidth;
@@ -288,7 +282,7 @@ void hooks()
 	HOOK("0x2AF74B0", termsTask, old_termsTask);
 	HOOK("0x2CAC920", THISISATESTANDITWILLBEREPLACEDWITHOTHERTHINGS, old_THISISATESTANDITWILLBEREPLACEDWITHOTHERTHINGS);
 	//HOOK_NO_ORIG("0xC0DBF8", GetGameServerID);
-	HOOK_NO_ORIG("0x2867180", IsDummy);
+	//HOOK_NO_ORIG("0x2867180", IsDummy);
 	HOOK("0x270EAF0", PushAPI$$__Internal$$OnRegisterToken, old_PushAPI$$__Internal$$OnRegisterToken);
 	HOOK("0xC23964", CommonAPI$$__Internal$$OnRegisterToken, old_CommonAPI$$__Internal$$OnRegisterToken);
 	//HOOK_NO_ORIG("0xC1C188", IsGetVersionInfo);
@@ -299,9 +293,9 @@ void hooks()
 	HOOK("0x2712FCC", Post, old_Post);
 	HOOK("0x2712FCC", NONOBSERVABLE_Post, old_NONOBSERVABLE_Post);
 	HOOK("0xD2A188", NTException$$_ctor, old_NTException$$_ctor);
-	//HOOK("0x26D2DC8", NTDebugLogHook, old_NTDebugLogHook);
-	//HOOK("0x26D2DD0", WarningNTDebugLogHook, old_WarningNTDebugLogHook);
-	//HOOK("0x26D2DCC", ErrorNTDebugLogHook, old_ErrorNTDebugLogHook);
+	HOOK_NO_ORIG("0x26D2DC8", NTDebugLogHook);
+	//HOOK_NO_ORIG("0x26D2DD0", WarningNTDebugLogHook);
+	//HOOK_NO_ORIG("0x26D2DCC", ErrorNTDebugLogHook);
 }
 
 void *hack_thread(void *) {
