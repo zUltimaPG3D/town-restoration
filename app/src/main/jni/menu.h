@@ -21,24 +21,6 @@ void* (*LineSDKManager$$get_SDKListener)();
 int (*get_Screen$$Width)();
 int (*get_Screen$$Height)();
 
-void* CreateLanguage(const std::string& langCulture, const std::string& name, const std::string& displayName)
-{
-	void* (*Language$$ctor)(il2cppString* langCulture, il2cppString* name, il2cppString* displayName) = (void*(*)(il2cppString*, il2cppString*, il2cppString*)) POINTER("0xD3B4D8");
-	return Language$$ctor(CreateIl2CppString(langCulture.c_str()), CreateIl2CppString(name.c_str()), CreateIl2CppString(displayName.c_str()));
-}
-
-void* CreateNTGameServerListResult(void* data)
-{
-	void* (*NTGameServerListResult$$ctor)(void* data) = (void*(*)(void*)) POINTER("0xD3E458");
-	return NTGameServerListResult$$ctor(data);
-}
-
-void* CreateNTVersionResult(void* data)
-{
-	void* (*NTVersionResult$$ctor)(void* data) = (void*(*)(void*)) POINTER("0xD29C94");
-	return NTVersionResult$$ctor(data);
-}
-
 //bool (*old_CommonAPI$$IsDev)();
 bool CommonAPI$$IsDev()
 {
@@ -47,28 +29,6 @@ bool CommonAPI$$IsDev()
 }
 
 #define get_SDKListener LineSDKManager$$get_SDKListener()
-
-void (*old_RequestGameLanguageList)();
-void RequestGameLanguageList()
-{
-	LOGI("RequestGameLanguageList: CALLED");
-	Il2CppArray* languageArray = il2cpp_array_new(il2cpp_class_from_name(LibImages.Neptune_Core, "NTCore", "Language"), 1);
-	languageArray->vector[0] = CreateLanguage("en-US", "English", "English (en-US)");
-	LineSDKListener$$OnGameLanguage(get_SDKListener, languageArray, nullptr);
-	return old_RequestGameLanguageList();
-}
-
-bool requestedGSL = false;
-
-void (*old_RequestGameServerList)();
-void RequestGameServerList()
-{
-	LOGI("RequestGameServerList: CALLED");
-	requestedGSL = true;
-	void* jsonData = CreateJsonDataFromJSON(gameServer_listJson.dump());
-	LineSDKListener$$OnGameServerList(get_SDKListener, CreateNTGameServerListResult(jsonData), nullptr);
-	return old_RequestGameServerList();
-}
 
 void* (*old_Post)(il2cppString* url, void* param, void* webData);
 void* Post(il2cppString* url, void* param, void* webData)
@@ -86,32 +46,6 @@ void NONOBSERVABLE_Post(il2cppString* url, void* param, void* webData, void* cal
 	return old_NONOBSERVABLE_Post(url, param, webData, callback);
 }
 
-il2cppString* GetGameServerID()
-{
-	if (requestedGSL)
-		return CreateIl2CppString("DEADBEEF");
-	return nullptr;
-}
-
-//void* NetManagerWeirdClass;
-
-void (*old_CommonAPI_RequestVersion)(void* reqCountryCd);
-void CommonAPI_RequestVersion(void* reqCountryCd)
-{
-	STEP();
-	LOGI("RequestVersion (COMMONAPI): CALLED");
-	STEP();
-	std::string jsonData = clientVersionInfoJson.dump();
-	STEP();
-	void* jsonDataObj = CreateJsonDataFromJSON(jsonData);
-	STEP();
-	void* ntVersionResult = CreateNTVersionResult(jsonDataObj);
-	STEP();
-	LineSDKListener$$OnGetVersion(get_SDKListener, ntVersionResult, nullptr);
-	STEP();
-	return old_CommonAPI_RequestVersion(reqCountryCd);
-}
-
 void* (*old_termsTask)(void* instance);
 void* termsTask(void* instance)
 {
@@ -119,14 +53,25 @@ void* termsTask(void* instance)
 	return old_termsTask(instance);
 }
 
-void (*old_NetManager_RequestVersion)();
-void NetManager_RequestVersion()
+void* (*old_loginTask)(void* instance);
+void* loginTask(void* instance)
 {
-	LOGI("RequestVersion: CALLED");
-	//LOGI("RequestVersion: CALLING COMMONAPI REQUESTVERSION!");
-	//CommonAPI_RequestVersion(CreateIl2CppString("en"));
-	old_NetManager_RequestVersion();
-	return;
+	LOGI("loginTask: CALLED");
+	return old_loginTask(instance);
+}
+
+void* (*old_oauthConnectTask)(void* instance);
+void* oauthConnectTask(void* instance)
+{
+	LOGI("oauthConnectTask: CALLED");
+	return old_oauthConnectTask(instance);
+}
+
+void* (*old_LineSDKListener$$OnRegisterToken)(void* instance, void* rpt, void* exc);
+void* LineSDKListener$$OnRegisterToken(void* instance, void* rpt, void* exc)
+{
+	LOGI("LineSDKListener.OnRegisterToken: CALLED");
+	return old_LineSDKListener$$OnRegisterToken(instance, rpt, exc);
 }
 
 il2cppString* GetDomainURL(il2cppString* keyName)
@@ -229,13 +174,6 @@ void pointers()
 	litjson_pointers();
 }
 
-void (*old_THISISATESTANDITWILLBEREPLACEDWITHOTHERTHINGS)(void* instance, void* value);
-void THISISATESTANDITWILLBEREPLACEDWITHOTHERTHINGS(void* instance, void* value)
-{
-	LOGE("DICGAMESERVERDATA SET CALLED!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-	return old_THISISATESTANDITWILLBEREPLACEDWITHOTHERTHINGS(instance, value);
-}
-
 il2cppString* Encrypt(il2cppString* uid)
 {
 	LOGW("Game tried to encrypt string %s!", uid->getString().c_str());
@@ -272,24 +210,50 @@ void CommonAPI$$__Internal$$OnRegisterToken(il2cppString* pushToken)
 	return old_CommonAPI$$__Internal$$OnRegisterToken(pushToken);
 }
 
+il2cppString* m_current_url()
+{
+	return CreateIl2CppString("http://localhost:15151/");
+}
+
+void* (*old_DoLogin)(bool t);
+void* DoLogin(bool t)
+{
+	LOGW("netmanager do login ()");
+	return old_DoLogin(t);
+}
+
+il2cppString* (*old_GetLoginUrl)(int t);
+il2cppString* GetLoginUrl(int t)
+{
+	il2cppString* orig = old_GetLoginUrl(t);
+	LOGW("getloginurl %s", orig->getString().c_str());
+	return orig;
+}
+
+void* (*old_temp)(void* instance, il2cppString* mid, il2cppArray* vls);
+void* temp(void* instance, il2cppString* mid, il2cppArray* vls)
+{
+	LOGW("messagedialoghandler opentask");
+	return 2;
+}
+
 void hooks()
 {
 	HOOK_NO_ORIG("0xC1C7C0", GetDomainURL);
 	HOOK_NO_ORIG("0x2ABF7D0", Encrypt);
 	HOOK("0x2ABF7D0", Decrypt, old_Decrypt);
 	HOOK_NO_ORIG("0xC1F3E4", CommonAPI$$IsDev);
-	//HOOK("0xC21D2C", RequestGameLanguageList, old_RequestGameLanguageList);
 	HOOK("0x2AF74B0", termsTask, old_termsTask);
-	HOOK("0x2CAC920", THISISATESTANDITWILLBEREPLACEDWITHOTHERTHINGS, old_THISISATESTANDITWILLBEREPLACEDWITHOTHERTHINGS);
-	//HOOK_NO_ORIG("0xC0DBF8", GetGameServerID);
-	//HOOK_NO_ORIG("0x2867180", IsDummy);
+	HOOK("0x2AF7D08", loginTask, old_loginTask);
+	HOOK("0x2AF82DC", oauthConnectTask, old_oauthConnectTask);
+	HOOK("0x2868EE8", DoLogin, old_DoLogin);
+	HOOK("0x2CADFAC", LineSDKListener$$OnRegisterToken, old_LineSDKListener$$OnRegisterToken);
+	HOOK("0x2868994", GetLoginUrl, old_GetLoginUrl);
+	HOOK("0x2ACA030", temp, old_temp);
+	HOOK_NO_ORIG("0x2867180", IsDummy);
 	HOOK("0x270EAF0", PushAPI$$__Internal$$OnRegisterToken, old_PushAPI$$__Internal$$OnRegisterToken);
 	HOOK("0xC23964", CommonAPI$$__Internal$$OnRegisterToken, old_CommonAPI$$__Internal$$OnRegisterToken);
-	//HOOK_NO_ORIG("0xC1C188", IsGetVersionInfo);
-	//HOOK("0xC1E924", RequestGameServerList, old_RequestGameServerList);
-	//HOOK("0xC1DD54", CommonAPI_RequestVersion, old_CommonAPI_RequestVersion);
-	//HOOK("0x286C46C", NetManager_RequestVersion, old_NetManager_RequestVersion);
-	//HOOK("0x2A83F6C", NetManager$$__c$$_ctor, old_NetManager$$__c$$_ctor);
+	HOOK_NO_ORIG("0xF9A7B4", m_current_url);
 	HOOK("0x2712FCC", Post, old_Post);
 	HOOK("0x2712FCC", NONOBSERVABLE_Post, old_NONOBSERVABLE_Post);
 	HOOK("0xD2A188", NTException$$_ctor, old_NTException$$_ctor);
