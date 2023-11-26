@@ -2,60 +2,74 @@
 #include <thread>
 #include "../json.hpp"
 
-#include "actions/getClientVersionInfo.h"
-#include "actions/gameServer_list.h"
-#include "actions/getLoginToken.h"
-#include "actions/policy_agree.h"
-#include "actions/tos.h"
-#include "actions/getnid.h"
-#include "actions/register_push.h"
 #include "actions/default_success.h"
 
 std::thread webserver_thread;
+
+// #define SERVER_DEBUG
 
 static void toro_webserver_event(struct mg_connection *c, int ev, void *ev_data, void *fn_data) {
 	if (ev == MG_EV_HTTP_MSG) {
 		struct mg_http_message *hm = (struct mg_http_message *) ev_data;
 
-		if (mg_http_match_uri(hm, "//api/api_version/getClientVersionInfo")) {
-			LOGI("toro_webserver: Request to getClientVersionInfo");
-			mg_http_reply(c, 200, "", "%s",	clientVersionInfoJson.dump().c_str());
-		} else if (mg_http_match_uri(hm, "//api/langCulture/game/useList")) {
-			LOGI("toro_webserver: Request to useList (langCulture)");
-			nlohmann::json successJson = {
-				{"isSuccess", true},
-				{"data", {
-					{
-						{"langCulture", "en-US"},
-						{"name", "English (en-US)"},
-						{"displayName", "English (en-US)"},
-					},
-				}},
-			};
-			mg_http_reply(c, 200, "", "%s",	successJson.dump().c_str());
-		} else if (mg_http_match_uri(hm, "//api/gameServer/list")) {
-			LOGI("toro_webserver: Request to list (gameServer)");
-			mg_http_reply(c, 200, "", "%s",	gameServer_listJson.dump().c_str());
-		} else if (mg_http_match_uri(hm, "//api/v1/login/guest/getLoginToken")) {
-			LOGI("toro_webserver: Request to getLoginToken (guest login)");
-			mg_http_reply(c, 200, "", "%s",	loginTokenJson.dump().c_str());
-		} else if (mg_http_match_uri(hm, "//api/policy/v2/nid/agree/request/byPfSessionToken/forClient")) {
-			LOGI("toro_webserver: Request to policy agree (guest login)");
-			mg_http_reply(c, 200, "", "%s",	policyAgreeJson.dump().c_str());
-		} else if (mg_http_match_uri(hm, "/linegames/getnid")) {
-			LOGI("toro_webserver: Request to getnid");
-			mg_http_reply(c, 200, "", "%s",	getnidJson.dump().c_str());
-		} else if (mg_http_match_uri(hm, "/linegames_log/sendlog")) {
+		bool log = true;
+
+		////
+		//// (Neptune) Game info endpoints
+		////
+		{
+			#include "actions/getClientVersionInfo.h"
+
+			if (mg_http_match_uri(hm, "//api/langCulture/game/useList")) {
+				log = false;
+				LOGI("toro_webserver: Request to useList (langCulture)");
+				nlohmann::json successJson = {
+					{"isSuccess", true},
+					{"data", {
+						{
+							{"langCulture", "en-US"},
+							{"name", "English (en-US)"},
+							{"displayName", "English (en-US)"},
+						},
+					}},
+				};
+				mg_http_reply(c, 200, "", "%s",	successJson.dump().c_str());
+			}
+
+			#include "actions/gameServer_list.h" 
+		}
+		
+		////
+		//// (Neptune) Login endpoints
+		////
+		{
+			#include "actions/getLoginToken.h"
+			
+			#include "actions/policy_agree.h"
+
+			#include "actions/getnid.h"
+
+			#include "actions/register_push.h"
+		}
+
+		////
+		//// Misc. endpoints
+		////
+		if (mg_http_match_uri(hm, "/linegames_log/sendlog")) {
+			log = false;
 			LOGI("toro_webserver: Request to sendlog");
 			mg_http_reply(c, 200, "", "%s",	defaultSuccessJson.dump().c_str());
-		} else if (mg_http_match_uri(hm, "//api/v1/push/token/register/forClient")) {
-			LOGI("toro_webserver: Request to register token");
-			mg_http_reply(c, 200, "", "%s",	registerPushJson.dump().c_str());
-		} else if (mg_http_match_uri(hm, "/tos")) {
-			LOGI("toro_webserver: Request to fake TOS");
-			mg_http_reply(c, 200, "", "%s", tosContent.c_str());
-		} else {
-			LOGI("toro_webserver: Request to undefined endpoint %s", hm->uri.ptr);
+		}
+		
+		#include "actions/tos.h"
+
+		#ifdef SERVER_DEBUG
+		log = true;
+		#endif
+
+		if (log)
+		{
+			LOGI("toro_webserver: Generic request to endpoint %s", hm->uri.ptr);
 		}
 	}
 }

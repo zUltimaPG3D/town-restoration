@@ -70,7 +70,7 @@ void* oauthConnectTask(void* instance)
 void* (*old_LineSDKListener$$OnRegisterToken)(void* instance, void* rpt, void* exc);
 void* LineSDKListener$$OnRegisterToken(void* instance, void* rpt, void* exc)
 {
-	LOGI("LineSDKListener.OnRegisterToken: CALLED");
+	LOGE("LineSDKListener.OnRegisterToken: CALLED");
 	return old_LineSDKListener$$OnRegisterToken(instance, rpt, exc);
 }
 
@@ -199,14 +199,14 @@ void* NTException$$_ctor(void* instance, int result, il2cppString* message)
 void (*old_PushAPI$$__Internal$$OnRegisterToken)(bool success, il2cppString* pushToken);
 void PushAPI$$__Internal$$OnRegisterToken(bool success, il2cppString* pushToken)
 {
-	LOGI("PushAPI OnRegisterToken call, pushToken %s, success %s", pushToken->getString().c_str(), (success ? "Y" : "N"));
+	LOGE("PushAPI OnRegisterToken call, pushToken %s, success %s", pushToken->getString().c_str(), (success ? "Y" : "N"));
 	return old_PushAPI$$__Internal$$OnRegisterToken(success, pushToken);
 }
 
 void (*old_CommonAPI$$__Internal$$OnRegisterToken)(il2cppString* pushToken);
 void CommonAPI$$__Internal$$OnRegisterToken(il2cppString* pushToken)
 {
-	LOGI("CommonAPI OnRegisterToken call, pushToken %s", pushToken->getString().c_str());
+	LOGE("CommonAPI OnRegisterToken call, pushToken %s", pushToken->getString().c_str());
 	return old_CommonAPI$$__Internal$$OnRegisterToken(pushToken);
 }
 
@@ -230,11 +230,11 @@ il2cppString* GetLoginUrl(int t)
 	return orig;
 }
 
-void* (*old_temp)(void* instance, il2cppString* mid, il2cppArray* vls);
-void* temp(void* instance, il2cppString* mid, il2cppArray* vls)
+void* (*old_temp)(void* instance, il2cppString* params);
+void* temp(void* instance, il2cppString* params)
 {
-	LOGW("messagedialoghandler opentask");
-	return 2;
+	LOGE("PushProcessor OnRegisterToken: CALLED");
+	return old_temp(instance, params);
 }
 
 void hooks()
@@ -249,8 +249,8 @@ void hooks()
 	HOOK("0x2868EE8", DoLogin, old_DoLogin);
 	HOOK("0x2CADFAC", LineSDKListener$$OnRegisterToken, old_LineSDKListener$$OnRegisterToken);
 	HOOK("0x2868994", GetLoginUrl, old_GetLoginUrl);
-	HOOK("0x2ACA030", temp, old_temp);
-	HOOK_NO_ORIG("0x2867180", IsDummy);
+	HOOK("0x270F134", temp, old_temp);
+	//HOOK_NO_ORIG("0x2867180", IsDummy);
 	HOOK("0x270EAF0", PushAPI$$__Internal$$OnRegisterToken, old_PushAPI$$__Internal$$OnRegisterToken);
 	HOOK("0xC23964", CommonAPI$$__Internal$$OnRegisterToken, old_CommonAPI$$__Internal$$OnRegisterToken);
 	HOOK_NO_ORIG("0xF9A7B4", m_current_url);
