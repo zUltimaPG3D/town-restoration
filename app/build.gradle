@@ -15,7 +15,7 @@ android {
         {
             cmake
             {
-                cppFlags "-std=c++17 -pthread"
+                cppFlags "-std=c++17 -pthread -DkNO_KEYSTONE"
             }
         }
         signingConfig signingConfigs.debug

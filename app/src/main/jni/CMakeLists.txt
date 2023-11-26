@@ -4,12 +4,20 @@ add_library(
 		restoration
 		SHARED
 		Main.cpp
+		ImGui/imgui.cpp
+		ImGui/imgui_impl_android.cpp
+		ImGui/imgui_impl_opengl3.cpp
+		ImGui/imgui_tables.cpp
+		ImGui/imgui_widgets.cpp
+		ImGui/imgui_demo.cpp
+		ImGui/imgui_draw.cpp
 	Substrate/hde64.c
 	Substrate/SubstrateDebug.cpp
 	Substrate/SubstrateHook.cpp
 	Substrate/SubstratePosixMemory.cpp
 	Substrate/SymbolFinder.cpp
 	KittyMemory/KittyMemory.cpp
+	KittyMemory/KittyScanner.cpp
 	KittyMemory/MemoryPatch.cpp
 	KittyMemory/MemoryBackup.cpp
 	KittyMemory/KittyUtils.cpp
@@ -87,14 +95,14 @@ else ()
 	set(OPENGL_LIB GLESv3)
 endif (${ANDROID_PLATFORM_LEVEL} LESS 12)
 
-	# set(DOBBY_LIB ${CMAKE_CURRENT_SOURCE_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}/libdobby.a)
+	set(DOBBY_LIB ${CMAKE_CURRENT_SOURCE_DIR}/libs/${CMAKE_ANDROID_ARCH_ABI}/libdobby.a)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 target_link_libraries(
 		restoration
 		${LZ_LIB}
-		# ${DOBBY_LIB}
+		${DOBBY_LIB}
 		${OPENGL_LIB}
 		${GLESV2_LIB}
 		${android}

@@ -11,29 +11,36 @@
 
 #endif
 
-void hook(void *offset, void* ptr, void **orig)
+#include "../Misc/dobby.h"
+
+/*void hook(void *offset, void* ptr, void **orig)
 {
 #if defined(__aarch64__)
     A64HookFunction(offset, ptr, orig);
 #else
     MSHookFunction(offset, ptr, orig);
 #endif
+}*/
+
+void hook(void *orig_fcn, void* new_fcn, void **orig_fcn_ptr)
+{
+    DobbyHook(orig_fcn, new_fcn, orig_fcn_ptr);
 }
 
 #define POINTER(offset) getAbsoluteAddress(targetLibName, string2Offset(offset));
 #define POINTER_NOSEMICOLON(offset) getAbsoluteAddress(targetLibName, string2Offset(offset))
 
-#define HOOK(offset, ptr, orig) hook((void *)getAbsoluteAddress(targetLibName, string2Offset(OBFUSCATE(offset))), (void *)ptr, (void **)&orig)
-#define HOOK_LIB(lib, offset, ptr, orig) hook((void *)getAbsoluteAddress(OBFUSCATE(lib), string2Offset(OBFUSCATE(offset))), (void *)ptr, (void **)&orig)
+#define HOOK(offset, ptr, orig) DobbyHook((void *)(il2cppMap.startAddress + string2Offset(offset)), (void *)ptr, (void **)&orig)
+// #define HOOK_LIB(lib, offset, ptr, orig) hook((void *)getAbsoluteAddress(OBFUSCATE(lib), string2Offset(OBFUSCATE(offset))), (void *)ptr, (void **)&orig)
 
-#define HOOK_NO_ORIG(offset, ptr) hook((void *)getAbsoluteAddress(targetLibName, string2Offset(OBFUSCATE(offset))), (void *)ptr, NULL)
-#define HOOK_LIB_NO_ORIG(lib, offset, ptr) hook((void *)getAbsoluteAddress(OBFUSCATE(lib), string2Offset(OBFUSCATE(offset))), (void *)ptr, NULL)
+// #define HOOK_NO_ORIG(offset, ptr) DobbyHook((void *)(il2cppMap.startAddress + string2Offset(offset)), (void *)ptr, NULL)
+// #define HOOK_LIB_NO_ORIG(lib, offset, ptr) hook((void *)getAbsoluteAddress(OBFUSCATE(lib), string2Offset(OBFUSCATE(offset))), (void *)ptr, NULL)
 
-#define HOOKSYM(sym, ptr, org) hook(dlsym(dlopen(targetLibName, 4), OBFUSCATE(sym)), (void *)ptr, (void **)&org)
-#define HOOKSYM_LIB(lib, sym, ptr, org) hook(dlsym(dlopen(OBFUSCATE(lib), 0), OBFUSCATE(sym)), (void *)ptr, (void **)&org)
+// #define HOOKSYM(sym, ptr, org) hook(dlsym(dlopen(targetLibName, 4), OBFUSCATE(sym)), (void *)ptr, (void **)&org)
+// #define HOOKSYM_LIB(lib, sym, ptr, org) hook(dlsym(dlopen(OBFUSCATE(lib), 0), OBFUSCATE(sym)), (void *)ptr, (void **)&org)
 
-#define HOOKSYM_NO_ORIG(sym, ptr)  hook(dlsym(dlopen(targetLibName, 4), OBFUSCATE(sym)), (void *)ptr, NULL)
-#define HOOKSYM_LIB_NO_ORIG(lib, sym, ptr) hook(dlsym(dlopen(OBFUSCATE(lib), 4), OBFUSCATE(sym)), (void *)ptr, NULL)
+// #define HOOKSYM_NO_ORIG(sym, ptr)  hook(dlsym(dlopen(targetLibName, 4), OBFUSCATE(sym)), (void *)ptr, NULL)
+// #define HOOKSYM_LIB_NO_ORIG(lib, sym, ptr) hook(dlsym(dlopen(OBFUSCATE(lib), 4), OBFUSCATE(sym)), (void *)ptr, NULL)
 
 std::vector<MemoryPatch> memoryPatches;
 std::vector<uint64_t> offsetVector;
@@ -41,7 +48,7 @@ std::vector<uint64_t> offsetVector;
 // Patching a offset without switch.
 void patchOffset(const char *fileName, uint64_t offset, std::string hexBytes, bool isOn) {
 
-    MemoryPatch patch = MemoryPatch::createWithHex(fileName, offset, hexBytes);
+    MemoryPatch patch = MemoryPatch::createWithHex(il2cppMap, offset, hexBytes);
 
     //Check if offset exists in the offsetVector
     if (std::find(offsetVector.begin(), offsetVector.end(), offset) != offsetVector.end()) {

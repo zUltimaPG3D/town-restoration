@@ -12,10 +12,10 @@ If, for whatever reason, you choose not to use the prebuilt releases, or you jus
 
 To keep things organized, make a folder named `toro-app` on the root of the project, and put the game's APK in the folder with the name `game.apk`.
 
-If you haven't already, build the project with `./gradlew assembleDebug` or with the Build button in Android Studio.
+If you haven't already, build the project with `./gradlew assembleDebug` (or `./gradlew assembleRelease`) or with the Build button in Android Studio.
 
 With [`apktool`](https://apktool.org/), extract the files of both the `game.apk` and the output from the project build.
 
-Essentially, follow the instructions from [LGL's mod template documentation](https://github.com/LGLTeam/Android-Mod-Menu/wiki/Making-changes-to-the-APK-(PC)) on how to add the menu to the game, and **specifically follow Method 1, with overlay permissions** *(but instead of the UnityPlayerActivity smali which doesn't exist due to multidex, edit web/apache/sax/app.smali)*, unless it doesn't work.
+Essentially, follow the instructions from [PolarImGui install instructions](https://github.com/Polarmods/PolarImGui/tree/main) on how to add the menu to the game *(but instead of the UnityPlayerActivity smali which doesn't exist due to multidex, edit web/apache/sax/app.smali)*, unless it doesn't work.
 
 If there are any issues, contact me @ `55ar.` on Discord and we can discuss the issue further.
