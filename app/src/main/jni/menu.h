@@ -5,6 +5,14 @@
 #include "lib-utils/HttpResponse.h"
 #include "toro_webserver/toro_webserver.h"
 #include "Unity/Screen.h"
+
+bool sl_gc = false;
+
+inline void OpenURL(const std::string& url)
+{
+	((void(*)(il2cppString*))POINTER_NOSEMICOLON("0x19D15D4"))(CreateIl2CppString(url.c_str()));
+}
+
 #include "menu_hook.h"
 #include "Unity/Input.h"
 #include "KittyMemory/KittyScanner.hpp"
@@ -78,9 +86,11 @@ void* LineSDKListener$$OnRegisterToken(void* instance, void* rpt, void* exc)
 il2cppString* (*old_GetDomainURL)(il2cppString* keyName);
 il2cppString* GetDomainURL(il2cppString* keyName)
 {
-	std::string orig = old_GetDomainURL(keyName)->getString();
+	il2cppString* s = old_GetDomainURL(keyName);
+	std::string orig = s->getString();
 	LOGW("Redirecting %s to localhost", orig.c_str());
-	return CreateIl2CppString("http://localhost:15151/"); // not good if you're running a blockheads server on the device 🔥
+	if (!sl_gc) return CreateIl2CppString("http://localhost:15151/"); // not good if you're running a blockheads server on the device 🔥
+	return s;
 }
 
 void (*old_NTDebugLogHook)(void* message);
@@ -239,9 +249,17 @@ void* temp(void* instance, il2cppString* params)
 	return old_temp(instance, params);
 }
 
+il2cppString* (*old_GameCode)();
+il2cppString* GameCode()
+{
+	if (sl_gc) return CreateIl2CppString("SL");
+	return old_GameCode();
+}
+
 void hooks()
 {
 	HOOK("0xC1C7C0", GetDomainURL, old_GetDomainURL);
+	HOOK("0xC1BBFC", GameCode, old_GameCode);
 	HOOK("0x2ABF7D0", Encrypt, old_Encrypt);
 	HOOK("0x2ABF7D0", Decrypt, old_Decrypt);
 	//HOOK_NO_ORIG("0xC1F3E4", CommonAPI$$IsDev);

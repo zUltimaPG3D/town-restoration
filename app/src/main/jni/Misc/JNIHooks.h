@@ -31,7 +31,7 @@ jboolean nativeInjectEvent(JNIEnv *env, jobject thiz, jobject inputEvent)
             auto y = env->CallFloatMethod(inputEvent, MotionEvent_getY);
             auto action = env->CallIntMethod(inputEvent,
                                             MotionEvent_getAction);
-            LOGD("X:%f\nY:%f\nAction:%i", x, y, action);
+            // LOGD("X:%f\nY:%f\nAction:%i", x, y, action);
             ImGui_ImplAndroid_HandleInputEvent(x,
                                                y,
                                                action);

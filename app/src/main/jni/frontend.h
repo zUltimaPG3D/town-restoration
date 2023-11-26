@@ -1,3 +1,4 @@
+#include "ImGuiStuff.h"
 #ifndef MENU
 #define MENU
 
@@ -18,12 +19,16 @@ namespace Menu {
 			static int counter = 0;
 
 			ImGui::Begin(
-					"Hello, world!");
+					"Town Restoration");
+			
+			if (ImGui::Button("GitHub Repo")) OpenURL("https://github.com/zUltimaPG3D/town-restoration/");
+			if (ImGui::Button("Community Discord")) OpenURL("https://discord.gg/keB3RNumVt");
 
-			ImGui::Text(
+			/*ImGui::Text(
 					"This is some useful text.");
 			ImGui::Checkbox("Demo Window",
 							&show_demo_window);
+			ImGui::Checkbox("SL GameCode", &sl_gc);
 			ImGui::Checkbox("Another Window", &show_another_window);
 
 			ImGui::SliderFloat("float", &f, 0.0f,
@@ -40,13 +45,18 @@ namespace Menu {
 			char str1[128] = "Hello, world!";
 			ImGui::InputTextWithHint("input text (w/ hint)", "enter text here", str1,
 									 IM_ARRAYSIZE(str1));
-			ImGui::LabelText("test", "%s", str1);
+			ImGui::LabelText("test", "%s", str1);*/
 
 
-			const char *items[] = {"This doesn't work please fix XD", "Item 2", "Item 3", "Item 4"};
+			/*const char *items[] = {"Classic Steam Theme", "Light Theme", "Dark Theme"};
 			static int item_current = 0;
 
-			ImGui::Combo("Combo", &item_current, items, IM_ARRAYSIZE(items));
+			if (ImGui::Combo("Combo", &item_current, items, IM_ARRAYSIZE(items)))
+			{
+				if (item_current == 0) SetClassicSteamHalfLifeTheme();
+				if (item_current == 1) ImGui::StyleColorsLight();
+				if (item_current == 2) ImGui::StyleColorsDark();
+			}*/
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
 						1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
