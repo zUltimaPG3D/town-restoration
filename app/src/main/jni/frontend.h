@@ -18,8 +18,7 @@ namespace Menu {
 			static float f = 0.0f;
 			static int counter = 0;
 
-			ImGui::Begin(
-					"Town Restoration");
+			ImGui::Begin("Town Restoration");
 			
 			if (ImGui::Button("GitHub Repo")) OpenURL("https://github.com/zUltimaPG3D/town-restoration/");
 			if (ImGui::Button("Community Discord")) OpenURL("https://discord.gg/keB3RNumVt");
@@ -58,9 +57,7 @@ namespace Menu {
 				if (item_current == 2) ImGui::StyleColorsDark();
 			}*/
 
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-						1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 			ImGui::End();
 		}
