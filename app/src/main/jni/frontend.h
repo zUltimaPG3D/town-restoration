@@ -23,6 +23,9 @@ namespace Menu {
 			if (ImGui::Button("GitHub Repo")) OpenURL("https://github.com/zUltimaPG3D/town-restoration/");
 			if (ImGui::Button("Community Discord")) OpenURL("https://discord.gg/keB3RNumVt");
 
+			ImGuiIO& io = ImGui::GetIO();
+			ImGui::Checkbox("Software Cursor Rendering", &io.MouseDrawCursor);
+
 			/*ImGui::Text(
 					"This is some useful text.");
 			ImGui::Checkbox("Demo Window",

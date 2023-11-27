@@ -7,6 +7,8 @@ The English release of Onsen Town depended on servers, and an older (yet recent)
 
 For now, this project will do it's best to make the game playable **without** real server requests being passed.
 
+For a more accurate/secure server, [dewdrop](https://github.com/synzr/dewdrop) is being worked on and [puzzle](https://github.com/synzr/puzzle/) is abandoned yet still an option for at least getting into the main menu.
+
 # Build instructions
 If, for whatever reason, you choose not to use the prebuilt releases, or you just wanna experiment with adding things to the mod, you can of course build the project yourself!
 
@@ -19,3 +21,11 @@ With [`apktool`](https://apktool.org/), extract the files of both the `game.apk`
 Essentially, follow the instructions from [PolarImGui install instructions](https://github.com/Polarmods/PolarImGui/tree/main) on how to add the menu to the game *(but instead of the UnityPlayerActivity smali which doesn't exist due to multidex, edit web/apache/sax/app.smali)*, unless it doesn't work.
 
 If there are any issues, contact me @ `55ar.` on Discord and we can discuss the issue further.
+
+# Game server
+
+The servers for the game run entirely locally, as seen in [toro_webserver.h](app/src/main/jni/toro_webserver/toro_webserver.h), and the [puzzle](https://github.com/synzr/puzzle/) repo mentioned above was used as reference for most endpoints.
+
+The server is in no means secure or accurate to how the real API would work, as it's only purpose is to get the game to run correctly, and it runs entirely locally, so any security exploit found would not affect you at all unless you cause it yourself.
+
+The server runs on port `15151`, but it can run on any chosen port as long as the `toro_webserver.h` code is edited to reflect the change.

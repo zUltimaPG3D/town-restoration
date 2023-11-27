@@ -20,7 +20,7 @@ void hook_menu_stuff()
 	const char *dlopen_error = dlerror();
 	if (dlopen_error)
 	{
-		eglhandle = dlopen(OBFUSCATE("libunity.so"), RTLD_LAZY); // I have no idea if this works it was just to me that it would fix crashes so I did it really quickly
+		eglhandle = dlopen(OBFUSCATE("libunity.so"), RTLD_LAZY);
 	}
 	auto eglSwapBuffers = dlsym(eglhandle, OBFUSCATE("eglSwapBuffers"));
 	const char *dlsym_error = dlerror();
