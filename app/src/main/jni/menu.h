@@ -109,59 +109,6 @@ void ErrorNTDebugLogHook(void* message)
 	((void(*)(void*))POINTER_NOSEMICOLON("0x11D85E4"))(message);
 }
 
-/*void InitImGUI()
-{
-	IMGUI_CHECKVERSION();
-	CreateContext();
-	ImGui_ImplOpenGL3_Init("#version 100");
-	ImGuiIO &io = GetIO();
-	io.DisplaySize = ImVec2(get_Screen$$Width(), get_Screen$$Height());
-	// ImGui_ImplAndroid_Init(nullptr);
-	SetupImGuiStyle();
-	GetStyle().ScaleAllSizes(4.0f);
-}*/
-
-/*EGLBoolean (*old_eglSwapBuffers)(EGLDisplay display, EGLSurface surface);
-EGLBoolean eglSwapBuffers(EGLDisplay display, EGLSurface surface)
-{
-	if (!init)
-	{
-		STEP();
-		InitImGUI();
-		STEP();
-		init = true;
-	}
-	STEP();
-	ImGuiIO &io = GetIO();
-	STEP();
-	if (step1)
-		ImGui_ImplOpenGL3_NewFrame();
-	STEP();
-	if (step2)
-		NewFrame();
-	STEP();
-	if (step3)
-		DrawMenu();
-	STEP();
-	if (step4)
-		EndFrame();
-	STEP();
-	if (step5)
-		Render();
-	STEP();
-	if (step6)
-		ImGui_ImplOpenGL3_RenderDrawData(GetDrawData());
-	STEP();
-	return old_eglSwapBuffers(display, surface);
-}*/
-
-/*void* (*old_NetManager$$__c$$_ctor)(void* instance);
-void* NetManager$$__c$$_ctor(void* instance)
-{
-	NetManagerWeirdClass = instance;
-	return old_NetManager$$__c$$_ctor(instance);
-}*/
-
 bool IsDummy(void* instance)
 {
 	return true;
@@ -357,23 +304,6 @@ void *hack_thread(void *) {
 
 	pointers();
 	hooks();
-
-	// HOOKSYM_LIB("libEGL.so", "eglSwapBuffers", eglSwapBuffers, old_eglSwapBuffers);
-	/*auto eglhandle = dlopen("libEGL.so", RTLD_LAZY);
-	const char *dlopen_error = dlerror();
-	if (dlopen_error)
-	{
-		eglhandle = dlopen("libunity.so", RTLD_LAZY);
-	}
-	auto eglSwapBuffers = dlsym(eglhandle, "eglSwapBuffers");
-	const char *dlsym_error = dlerror();
-	if (dlsym_error)
-	{
-		LOGE("Cannot load symbol 'eglSwapBuffers': %s", dlsym_error);
-	} else
-	{
-		hook(eglSwapBuffers, (void *) eglSwapBuffers, (void **) &old_eglSwapBuffers);
-	}*/
 
 	// examples, just in case:
 	// HOOK("str", FunctionExample, old_FunctionExample);
