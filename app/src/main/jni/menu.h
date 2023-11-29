@@ -238,8 +238,8 @@ void *hack_thread(void *) {
 		il2cppMap = KittyMemory::getElfBaseMap(targetLibName);
 	} while (!il2cppMap.isValid());
 	do {
-        unityMaps = KittyMemory::getMapsEndWith("libunity.so");
-    } while (unityMaps.empty());
+		unityMaps = KittyMemory::getMapsEndWith("libunity.so");
+	} while (unityMaps.empty());
 
 	LOGI("%s has been loaded", (const char *) targetLibName);
 	auto il2cpp_handle = xdl_open("libil2cpp.so", 0);
