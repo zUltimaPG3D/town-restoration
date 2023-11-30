@@ -6,11 +6,20 @@
 #include "toro_webserver/toro_webserver.h"
 #include "Unity/Screen.h"
 
+bool restart_on_clear = true;
+bool owoify_enabled = false;
 bool sl_gc = false;
 
 inline void OpenURL(const std::string& url)
 {
 	((void(*)(il2cppString*))POINTER_NOSEMICOLON("0x19D15D4"))(CreateIl2CppString(url.c_str()));
+}
+
+inline void ClearMyData()
+{
+	((void(*)()) POINTER_NOSEMICOLON("0x19F16B8"))();
+	if (restart_on_clear)
+		exit(-1);
 }
 
 #include "menu_hook.h"
@@ -19,6 +28,8 @@ inline void OpenURL(const std::string& url)
 // using namespace ImGui;
 
 using namespace KittyScanner;
+
+#include "Misc/owo-hook/owo.h"
 
 void (*LineSDKListener$$OnGameLanguage)(void* instance, Il2CppArray* supportLanguages, void* error);
 void (*LineSDKListener$$OnGameServerList)(void* instance, void* result, void* error);
@@ -203,12 +214,28 @@ il2cppString* GameCode()
 	return old_GameCode();
 }
 
+il2cppString* (*old_TMP_Text$get_text)(void* instance);
+il2cppString* TMP_Text$get_text(void* instance)
+{
+	il2cppString* real = old_TMP_Text$get_text(instance);
+	return owoify_enabled ? OwOify(real) : real;
+}
+
+il2cppString* (*old_Text$get_text)(void* instance);
+il2cppString* Text$get_text(void* instance)
+{
+	il2cppString* real = old_Text$get_text(instance);
+	return owoify_enabled ? OwOify(real) : real;
+}
+
 void hooks()
 {
 	HOOK("0xC1C7C0", GetDomainURL, old_GetDomainURL);
 	HOOK("0xC1BBFC", GameCode, old_GameCode);
 	HOOK("0x2ABF7D0", Encrypt, old_Encrypt);
 	HOOK("0x2ABF7D0", Decrypt, old_Decrypt);
+	HOOK("0xA0DC70", TMP_Text$get_text, old_TMP_Text$get_text);
+	HOOK("0x15C0CCC", Text$get_text, old_Text$get_text);
 	//HOOK_NO_ORIG("0xC1F3E4", CommonAPI$$IsDev);
 	//HOOK("0x2AF74B0", termsTask, old_termsTask);
 	//HOOK("0x2AF7D08", loginTask, old_loginTask);

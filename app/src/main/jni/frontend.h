@@ -11,6 +11,12 @@ namespace Menu {
 		static bool show_another_window = false;
 		static ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+		ImGuiIO& io = ImGui::GetIO();
+		ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
+
+		std::string text = "FPS: " + std::to_string((int)io.Framerate);
+		draw_list->AddText(ImVec2(6, 6), ImColor(1.0f, 1.0f, 1.0f, 1.0f), text.c_str());
+
 		if (show_demo_window)
 			ImGui::ShowDemoWindow(&show_demo_window);
 
@@ -19,12 +25,30 @@ namespace Menu {
 			static int counter = 0;
 
 			ImGui::Begin("Town Restoration");
+
+			// ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			
 			if (ImGui::Button("GitHub Repo")) OpenURL("https://github.com/zUltimaPG3D/town-restoration/");
 			if (ImGui::Button("Community Discord")) OpenURL("https://discord.gg/keB3RNumVt");
 
-			ImGuiIO& io = ImGui::GetIO();
 			ImGui::Checkbox("Software Cursor Rendering", &io.MouseDrawCursor);
+			if (ImGui::CollapsingHeader("Player data"))
+			{
+				if (ImGui::CollapsingHeader("Server data"))
+				{
+					ImGui::Text("TODO");
+				}
+				if (ImGui::Button("Clear data"))
+				{
+					ClearMyData();
+				}
+				ImGui::SameLine();
+				ImGui::Checkbox("& Restart", &restart_on_clear);
+			}
+			if (ImGui::CollapsingHeader("Misc. features"))
+			{
+				ImGui::Checkbox("OwOify", &owoify_enabled);
+			}
 
 			/*ImGui::Text(
 					"This is some useful text.");
@@ -59,8 +83,6 @@ namespace Menu {
 				if (item_current == 1) ImGui::StyleColorsLight();
 				if (item_current == 2) ImGui::StyleColorsDark();
 			}*/
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 			ImGui::End();
 		}
