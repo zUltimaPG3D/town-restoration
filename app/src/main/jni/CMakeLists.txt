@@ -11,17 +11,11 @@ add_library(
 		ImGui/imgui_widgets.cpp
 		ImGui/imgui_demo.cpp
 		ImGui/imgui_draw.cpp
-	Substrate/hde64.c
-	Substrate/SubstrateDebug.cpp
-	Substrate/SubstrateHook.cpp
-	Substrate/SubstratePosixMemory.cpp
-	Substrate/SymbolFinder.cpp
 	KittyMemory/KittyMemory.cpp
 	KittyMemory/KittyScanner.cpp
 	KittyMemory/MemoryPatch.cpp
 	KittyMemory/MemoryBackup.cpp
 	KittyMemory/KittyUtils.cpp
-	And64InlineHook/And64InlineHook.cpp
 	xdl/xdl.c
 	xdl/xdl_util.c
 	xdl/xdl_lzma.c
