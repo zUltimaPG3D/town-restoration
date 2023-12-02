@@ -330,7 +330,7 @@ int ntsdk_login_guest(char *s, int a2, int a3)
 
 void ntsdk_hook()
 {
-	HOOKSYM("lib_NTSDK.so", "ntsdk_login_guest", ntsdk_login_guest, old_ntsdk_login_guest);
+	HOOKSYM_LIB("lib_NTSDK.so", "ntsdk_login_guest", ntsdk_login_guest, old_ntsdk_login_guest);
 }
 
 void ntsdk_wait()

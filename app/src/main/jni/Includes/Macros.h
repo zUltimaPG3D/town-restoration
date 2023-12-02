@@ -22,19 +22,10 @@ void hook(void *orig_fcn, void* new_fcn, void **orig_fcn_ptr)
 #define POINTER_NOSEMICOLON(offset) getAbsoluteAddress(targetLibName, string2Offset(offset))
 
 #define HOOK(offset, ptr, orig) DobbyHook((void *)(il2cppMap.startAddress + string2Offset(offset)), (void *)ptr, (void **)&orig)
-#define HOOK_MAP(map, offset, ptr, orig) DobbyHook((void *)(map.startAddress + string2Offset(offset)), (void *)ptr, (void **)&orig)
+#define HOOK_LIB(map, offset, ptr, orig) DobbyHook((void *)(map.startAddress + string2Offset(offset)), (void *)ptr, (void **)&orig) // uses KittyMemory map instead of library name
 
-#define HOOKSYM(lib, sym, ptr, orig) DobbyHook(DobbySymbolResolver(lib, sym), (void *)ptr, (void **)&orig)
-/*#define HOOK_LIB(lib, offset, ptr, orig) hook((void *)getAbsoluteAddress(lib, string2Offset(offset)), (void *)ptr, (void **)&orig)
-
-#define HOOK_NO_ORIG(offset, ptr) DobbyHook((void *)(il2cppMap.startAddress + string2Offset(offset)), (void *)ptr, NULL)
-#define HOOK_LIB_NO_ORIG(lib, offset, ptr) hook((void *)getAbsoluteAddress(lib, string2Offset(offset)), (void *)ptr, NULL)
-
-#define HOOKSYM(sym, ptr, org) hook(dlsym(dlopen(targetLibName, 4), sym), (void *)ptr, (void **)&org)
-#define HOOKSYM_LIB(lib, sym, ptr, org) hook(dlsym(dlopen(lib, 0), sym), (void *)ptr, (void **)&org)
-
-#define HOOKSYM_NO_ORIG(sym, ptr)  hook(dlsym(dlopen(targetLibName, 4), sym), (void *)ptr, NULL)
-#define HOOKSYM_LIB_NO_ORIG(lib, sym, ptr) hook(dlsym(dlopen(lib, 4), sym), (void *)ptr, NULL)*/
+#define HOOKSYM(sym, ptr, orig) DobbyHook(DobbySymbolResolver(targetLibName, sym), (void *)ptr, (void **)&orig)
+#define HOOKSYM_LIB(lib, sym, ptr, orig) DobbyHook(DobbySymbolResolver(lib, sym), (void *)ptr, (void **)&orig)
 
 std::vector<MemoryPatch> memoryPatches;
 std::vector<uint64_t> offsetVector;
