@@ -102,7 +102,7 @@ il2cppString* GetDomainURL(il2cppString* keyName)
 	il2cppString* s = old_GetDomainURL(keyName);
 	std::string orig = s->getString();
 	LOGW("Redirecting %s to localhost", orig.c_str());
-	if (!sl_gc) return CreateIl2CppString("http://localhost:15151/"); // not good if you're running a blockheads server on the device 🔥
+	if (!sl_gc) return CreateIl2CppString(HTTP_SERVER_URL); // not good if you're running a blockheads server on the device 🔥
 	return s;
 }
 
@@ -184,7 +184,7 @@ void CommonAPI$$__Internal$$OnRegisterToken(il2cppString* pushToken)
 
 il2cppString* m_current_url()
 {
-	return CreateIl2CppString("http://localhost:15151/");
+	return CreateIl2CppString(HTTP_SERVER_URL);
 }
 
 void* (*old_DoLogin)(bool t);
@@ -287,6 +287,20 @@ void NTPlayerPrefs_SetString(void* instance, il2cppString* key, il2cppString* va
 	old_NTPlayerPrefs_SetString(instance, key, value);
 }
 
+void* (*old_CoShowTerms)(void* observer, il2cppArray<int*>* termsType, il2cppString platformUserId, il2cppArray<bool*>* initialValues);
+void* CoShowTerms(void* observer, il2cppArray<int*>* termsType, il2cppString platformUserId, il2cppArray<bool*>* initialValues)
+{
+	LOGW("CoShowTerms");
+	return old_CoShowTerms(observer, termsType, platformUserId, initialValues);
+}
+
+void* (*old_RequestAsObservable)(il2cppString* serverAddr, il2cppString* act, void* param, void* webData, void* preprocessor, void* postprocessor);
+void* RequestAsObservable(il2cppString* serverAddr, il2cppString* act, void* param, void* webData, void* preprocessor, void* postprocessor)
+{
+	LOGW("RequestAsObservable");
+	return old_RequestAsObservable(CreateIl2CppString(HTTP_SERVER_URL), act, param, webData, preprocessor, postprocessor);
+}
+
 void hooks()
 {
 	HOOK("0xC1C7C0", GetDomainURL, old_GetDomainURL);
@@ -301,6 +315,8 @@ void hooks()
 	HOOK("0x2BE2804", EventTOS, old_EventTOS);
 	HOOK("0x2BE3780", EventFirstLogin, old_EventFirstLogin);
 	HOOK("0x26D6500", NTPlayerPrefs_SetString, old_NTPlayerPrefs_SetString);
+	HOOK("0xD2D65C", CoShowTerms, old_CoShowTerms);
+	HOOK("0xD2AB84", RequestAsObservable, old_RequestAsObservable);
 	//HOOK_NO_ORIG("0xC1F3E4", CommonAPI$$IsDev);
 	//HOOK("0x2AF74B0", termsTask, old_termsTask);
 	//HOOK("0x2AF7D08", loginTask, old_loginTask);

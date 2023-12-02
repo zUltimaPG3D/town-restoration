@@ -82,7 +82,7 @@ void toro_webserver_thread()
 	struct mg_mgr mgr;
 	mg_mgr_init(&mgr);
 	mg_log_set(MG_LL_DEBUG);
-	mg_http_listen(&mgr, "http://localhost:15151", toro_webserver_event, NULL);
+	mg_http_listen(&mgr, HTTP_SERVER_URL, toro_webserver_event, NULL);
 	LOGI("toro_webserver: Webserver thread started (and listening)");
 	for (;;) mg_mgr_poll(&mgr, 1000);
 }

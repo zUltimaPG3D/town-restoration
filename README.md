@@ -28,7 +28,7 @@ The servers for the game run entirely locally, as seen in [toro_webserver.h](app
 
 The server is in no means secure or accurate to how the real API would work, as it's only purpose is to get the game to run correctly, and it runs entirely locally, so any security exploit found would not affect you at all unless you cause it yourself.
 
-The server runs on port `15151`, but it can run on any chosen port as long as the `toro_webserver.h` code is edited to reflect the change.
+The server runs on port `15151`, but it can run on any chosen port as long as the `HTTP_SERVER_URL` define in `Main.cpp` is edited to reflect the change.
 
 # Credits, Dependencies and Libraries
 [LGL Mod Menu](https://github.com/LGLTeam/Android-Mod-Menu) by LGLTeam (GPL v3)

@@ -22,6 +22,8 @@
 #include "Unity.h"
 #include "il2cpp_stuff.h"
 
+#define HTTP_SERVER_URL "http://localhost:15151/"
+
 using namespace KittyMemory;
 
 ProcMap il2cppMap;
