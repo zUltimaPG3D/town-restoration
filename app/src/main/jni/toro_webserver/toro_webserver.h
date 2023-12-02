@@ -55,13 +55,15 @@ static void toro_webserver_event(struct mg_connection *c, int ev, void *ev_data,
 		////
 		//// Misc. endpoints
 		////
-		if (mg_http_match_uri(hm, "/linegames_log/sendlog")) {
-			log = false;
-			LOGI("toro_webserver: Request to sendlog");
-			mg_http_reply(c, 200, "", "%s",	defaultSuccessJson.dump().c_str());
+		{
+			if (mg_http_match_uri(hm, "/linegames_log/sendlog")) {
+				log = false;
+				LOGI("toro_webserver: Request to sendlog");
+				mg_http_reply(c, 200, "", "%s",	defaultSuccessJson.dump().c_str());
+			}
+			
+			#include "actions/tos.h"
 		}
-		
-		#include "actions/tos.h"
 
 		#ifdef SERVER_DEBUG
 		log = true;
