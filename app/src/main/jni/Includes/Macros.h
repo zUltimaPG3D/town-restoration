@@ -22,6 +22,9 @@ void hook(void *orig_fcn, void* new_fcn, void **orig_fcn_ptr)
 #define POINTER_NOSEMICOLON(offset) getAbsoluteAddress(targetLibName, string2Offset(offset))
 
 #define HOOK(offset, ptr, orig) DobbyHook((void *)(il2cppMap.startAddress + string2Offset(offset)), (void *)ptr, (void **)&orig)
+#define HOOK_MAP(map, offset, ptr, orig) DobbyHook((void *)(map.startAddress + string2Offset(offset)), (void *)ptr, (void **)&orig)
+
+#define HOOKSYM(lib, sym, ptr, orig) DobbyHook(DobbySymbolResolver(lib, sym), (void *)ptr, (void **)&orig)
 // #define HOOK_LIB(lib, offset, ptr, orig) hook((void *)getAbsoluteAddress(OBFUSCATE(lib), string2Offset(OBFUSCATE(offset))), (void *)ptr, (void **)&orig)
 
 // #define HOOK_NO_ORIG(offset, ptr) DobbyHook((void *)(il2cppMap.startAddress + string2Offset(offset)), (void *)ptr, NULL)

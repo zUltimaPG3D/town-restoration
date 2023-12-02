@@ -6,7 +6,7 @@ if (mg_http_match_uri(hm, "//api/gameServer/list")) {
 			{
 				{"gameServerId", "DEADBEEF"},
 				{"gameServerNm", "DEADBEEF"},
-			}
+			},
 		}},
 	};
 	LOGI("toro_webserver: Request to list (gameServer)");

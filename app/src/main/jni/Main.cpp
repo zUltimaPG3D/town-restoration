@@ -26,6 +26,7 @@
 using namespace KittyMemory;
 
 ProcMap il2cppMap;
+ProcMap ntsdkMap;
 std::vector<ProcMap> unityMaps;
 
 long idx = 0;

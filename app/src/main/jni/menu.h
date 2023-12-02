@@ -22,6 +22,8 @@ inline void ClearMyData()
 		exit(-1);
 }
 
+#include "Misc/enums.h"
+
 #include "menu_hook.h"
 #include "Unity/Input.h"
 #include "KittyMemory/KittyScanner.hpp"
@@ -228,6 +230,63 @@ il2cppString* Text$get_text(void* instance)
 	return owoify_enabled ? OwOify(real) : real;
 }
 
+void (*old_BXTrackEvent)(il2cppString* s);
+void BXTrackEvent(il2cppString* s)
+{
+	LOGW("BX.AdjustCall TrackEvent(string) with %s", s->getString().c_str());
+	old_BXTrackEvent(s);
+}
+
+il2cppString* Serialize(void* object)
+{
+	// other possible serialize options:
+	// IronSource JSON Serialize - 0x2CEC978
+	// MiniJson JSON Serialize - 0x1118B18
+	// Unity SimpleJson Serialize - 0x2B3C5E0
+	// LitJson JsonMapper Serialize - 0x26A3C70
+	return ((il2cppString* (*) (void*)) POINTER_NOSEMICOLON("0x26A3C70"))(object);
+}
+
+void (*old_AnalyticsSendLog)(int action, il2cppArray<void**>* paramList);
+void AnalyticsSendLog(int action, il2cppArray<void**>* paramList)
+{
+	std::string i_hate_fmt = "Analytics.SendLog(ToroLogType, object[]) for action " + std::to_string(action);
+	LOGW("%s", i_hate_fmt.c_str());
+	LOGW("Is params null / empty? %s", (paramList == nullptr) ? "Yes" : "No");
+	old_AnalyticsSendLog(action, paramList);
+}
+
+void (*old_EventLogin)(int x);
+void EventLogin(int x)
+{
+	std::string i_hate_fmt = "Analytics.EventLogin(PlatformID) for pid " + std::to_string(x);
+	LOGW("%s", i_hate_fmt.c_str());
+	old_EventLogin(x);
+}
+
+void (*old_EventTOS)();
+void EventTOS()
+{
+	std::string i_hate_fmt = "Analytics.EventTOS()";
+	LOGW("%s", i_hate_fmt.c_str());
+	old_EventTOS();
+}
+
+void (*old_EventFirstLogin)();
+void EventFirstLogin()
+{
+	std::string i_hate_fmt = "Analytics.EventFirstLogin()";
+	LOGW("%s", i_hate_fmt.c_str());
+	old_EventFirstLogin();
+}
+
+void (*old_NTPlayerPrefs_SetString)(void* instance, il2cppString* key, il2cppString* value);
+void NTPlayerPrefs_SetString(void* instance, il2cppString* key, il2cppString* value)
+{
+	LOGW("NTPlayerPrefs.SetString(%s, %s)", key->getString().c_str(), value->getString().c_str());
+	old_NTPlayerPrefs_SetString(instance, key, value);
+}
+
 void hooks()
 {
 	HOOK("0xC1C7C0", GetDomainURL, old_GetDomainURL);
@@ -236,6 +295,12 @@ void hooks()
 	HOOK("0x2ABF7D0", Decrypt, old_Decrypt);
 	HOOK("0xA0DC70", TMP_Text$get_text, old_TMP_Text$get_text);
 	HOOK("0x15C0CCC", Text$get_text, old_Text$get_text);
+	HOOK("0x2BE2914", BXTrackEvent, old_BXTrackEvent);
+	HOOK("0x2BD8118", AnalyticsSendLog, old_AnalyticsSendLog);
+	HOOK("0x2BE3998", EventLogin, old_EventLogin);
+	HOOK("0x2BE2804", EventTOS, old_EventTOS);
+	HOOK("0x2BE3780", EventFirstLogin, old_EventFirstLogin);
+	HOOK("0x26D6500", NTPlayerPrefs_SetString, old_NTPlayerPrefs_SetString);
 	//HOOK_NO_ORIG("0xC1F3E4", CommonAPI$$IsDev);
 	//HOOK("0x2AF74B0", termsTask, old_termsTask);
 	//HOOK("0x2AF7D08", loginTask, old_loginTask);
@@ -256,6 +321,27 @@ void hooks()
 	//HOOK_NO_ORIG("0x26D2DCC", ErrorNTDebugLogHook);
 }
 
+int (*old_ntsdk_login_guest)(char *s, int a2, int a3);
+int ntsdk_login_guest(char *s, int a2, int a3)
+{
+	LOGW("native ntsdk_login_guest");
+	old_ntsdk_login_guest(s, a2, a3);
+}
+
+void ntsdk_hook()
+{
+	HOOKSYM("lib_NTSDK.so", "ntsdk_login_guest", ntsdk_login_guest, old_ntsdk_login_guest);
+}
+
+void ntsdk_wait()
+{
+	do {
+		ntsdkMap = KittyMemory::getElfBaseMap("lib_NTSDK.so");
+	} while (!ntsdkMap.isValid());
+	LOGI("lib_NTSDK has been loaded");
+	ntsdk_hook();
+}
+
 void *hack_thread(void *) {
 	LOGI("pthread created");
 
@@ -267,6 +353,7 @@ void *hack_thread(void *) {
 	do {
 		unityMaps = KittyMemory::getMapsEndWith("libunity.so");
 	} while (unityMaps.empty());
+	std::thread(&ntsdk_wait).detach();
 
 	LOGI("%s has been loaded", (const char *) targetLibName);
 	auto il2cpp_handle = xdl_open("libil2cpp.so", 0);
