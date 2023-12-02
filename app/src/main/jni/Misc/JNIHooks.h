@@ -13,19 +13,19 @@ jboolean nativeInjectEvent(JNIEnv *env, jobject thiz, jobject inputEvent)
 {
     if (init)
     {
-        jclass MotionEventCls = env->FindClass(OBFUSCATE("android/view/MotionEvent"));
-        jclass KeyEventCls = env->FindClass(OBFUSCATE("android/view/KeyEvent"));
+        jclass MotionEventCls = env->FindClass("android/view/MotionEvent");
+        jclass KeyEventCls = env->FindClass("android/view/KeyEvent");
         if (env->IsInstanceOf(inputEvent, MotionEventCls))
         {
             if (!MotionEvent_getX)
-                MotionEvent_getX = env->GetMethodID(MotionEventCls, OBFUSCATE("getX"),
-                                                    OBFUSCATE("()F"));
+                MotionEvent_getX = env->GetMethodID(MotionEventCls, "getX",
+                                                    "()F");
             if (!MotionEvent_getY)
-                MotionEvent_getY = env->GetMethodID(MotionEventCls, OBFUSCATE("getY"),
-                                                    OBFUSCATE("()F"));
+                MotionEvent_getY = env->GetMethodID(MotionEventCls, "getY",
+                                                    "()F");
             if (!MotionEvent_getAction)
-                MotionEvent_getAction = env->GetMethodID(MotionEventCls, OBFUSCATE("getAction"),
-                                                         OBFUSCATE("()I"));
+                MotionEvent_getAction = env->GetMethodID(MotionEventCls, "getAction",
+                                                         "()I");
             ImGuiIO &io = ImGui::GetIO();
             auto x = env->CallFloatMethod(inputEvent, MotionEvent_getX);
             auto y = env->CallFloatMethod(inputEvent, MotionEvent_getY);
@@ -40,20 +40,20 @@ jboolean nativeInjectEvent(JNIEnv *env, jobject thiz, jobject inputEvent)
         } else if (env->IsInstanceOf(inputEvent, KeyEventCls))
         {
             if (!KeyEvent_getAction)
-                KeyEvent_getAction = env->GetMethodID(KeyEventCls, OBFUSCATE("getAction"),
-                                                      OBFUSCATE("()I"));
+                KeyEvent_getAction = env->GetMethodID(KeyEventCls, "getAction",
+                                                      "()I");
             if (env->CallIntMethod(inputEvent, KeyEvent_getAction) == 0)
             {
                 if (!KeyEvent_getKeyCode)
-                    KeyEvent_getKeyCode = env->GetMethodID(KeyEventCls, OBFUSCATE("getKeyCode"),
-                                                           OBFUSCATE("()I"));
+                    KeyEvent_getKeyCode = env->GetMethodID(KeyEventCls, "getKeyCode",
+                                                           "()I");
                 if (!KeyEvent_getUnicodeChar)
                     KeyEvent_getUnicodeChar = env->GetMethodID(KeyEventCls,
-                                                               OBFUSCATE("getUnicodeChar"),
-                                                               OBFUSCATE("(I)I"));
+                                                               "getUnicodeChar",
+                                                               "(I)I");
                 if (!KeyEvent_getMetaState)
-                    KeyEvent_getMetaState = env->GetMethodID(KeyEventCls, OBFUSCATE("getMetaState"),
-                                                             OBFUSCATE("()I"));
+                    KeyEvent_getMetaState = env->GetMethodID(KeyEventCls, "getMetaState",
+                                                             "()I");
                 ImGuiIO &io = ImGui::GetIO();
                 int KeyCode = env->CallIntMethod(inputEvent, KeyEvent_getKeyCode);
                 switch (KeyCode)
@@ -117,7 +117,7 @@ jint hook_RegisterNatives(JNIEnv* env, jclass klazz, const JNINativeMethod* meth
     for (int i = 0; i < methodcount; ++i)
     {
         auto method = methods[i];
-        if (strcmp(method.name, OBFUSCATE("nativeInjectEvent")) == 0)
+        if (strcmp(method.name, "nativeInjectEvent") == 0)
         {
             hook((void *) method.fnPtr, (void *) nativeInjectEvent,
                  (void **) &old_nativeInjectEvent);

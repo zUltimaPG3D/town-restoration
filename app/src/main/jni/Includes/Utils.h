@@ -20,11 +20,11 @@ DWORD findLibrary(const char *library) {
     FILE *fp = NULL;
     DWORD address = 0;
 
-    sprintf(filename, OBFUSCATE("/proc/self/maps"));
+    sprintf(filename, "/proc/self/maps");
 
-    fp = fopen(filename, OBFUSCATE("rt"));
+    fp = fopen(filename, "rt");
     if (fp == NULL) {
-        perror(OBFUSCATE("fopen"));
+        perror("fopen");
         goto done;
     }
 
@@ -59,7 +59,7 @@ jboolean isGameLibLoaded(JNIEnv *env, jobject thiz) {
 bool isLibraryLoaded(const char *libraryName) {
     //libLoaded = true;
     char line[512] = {0};
-    FILE *fp = fopen(OBFUSCATE("/proc/self/maps"), OBFUSCATE("rt"));
+    FILE *fp = fopen("/proc/self/maps", "rt");
     if (fp != NULL) {
         while (fgets(line, sizeof(line), fp)) {
             std::string a = line;

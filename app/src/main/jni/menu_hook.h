@@ -16,17 +16,17 @@ EGLBoolean new_eglSwapBuffers(EGLDisplay _display, EGLSurface _surface) {
 
 void hook_menu_stuff()
 {
-	auto eglhandle = dlopen(OBFUSCATE("libEGL.so"), RTLD_LAZY);
+	auto eglhandle = dlopen("libEGL.so", RTLD_LAZY);
 	const char *dlopen_error = dlerror();
 	if (dlopen_error)
 	{
-		eglhandle = dlopen(OBFUSCATE("libunity.so"), RTLD_LAZY);
+		eglhandle = dlopen("libunity.so", RTLD_LAZY);
 	}
-	auto eglSwapBuffers = dlsym(eglhandle, OBFUSCATE("eglSwapBuffers"));
+	auto eglSwapBuffers = dlsym(eglhandle, "eglSwapBuffers");
 	const char *dlsym_error = dlerror();
 	if (dlsym_error)
 	{
-		LOGE(OBFUSCATE("Cannot load symbol 'eglSwapBuffers': %s"), dlsym_error);
+		LOGE("Cannot load symbol 'eglSwapBuffers': %s", dlsym_error);
 	} else
 	{
 		hook(eglSwapBuffers, (void *) new_eglSwapBuffers, (void **) &old_eglSwapBuffers);

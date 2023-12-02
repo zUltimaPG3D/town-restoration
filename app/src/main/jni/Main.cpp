@@ -14,7 +14,6 @@
 #include <GLES2/gl2ext.h>
 #include <GLES2/gl2platform.h>
 #include "Includes/Logger.h"
-#include "Includes/obfuscate.h"
 #include "Includes/Utils.h"
 #include "KittyMemory/MemoryPatch.hpp"
 #include "xdl/include/xdl.h"
