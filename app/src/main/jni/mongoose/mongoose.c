@@ -23,7 +23,7 @@
 #line 1 "src/base64.c"
 #endif
 
-#undef MG_ENABLE_EPOLL
+#undef MG_ENABLE_EPOLL // not in original mongoose, added because of android version support of `epoll_create1`
 
 static int mg_base64_encode_single(int c) {
   if (c < 26) {
