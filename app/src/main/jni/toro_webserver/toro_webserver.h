@@ -4,6 +4,8 @@
 
 #include "actions/default_success.h"
 
+#include "../SWUTS/services/adjust.h"
+
 std::thread webserver_thread;
 
 // #define SERVER_DEBUG
@@ -50,6 +52,10 @@ static void toro_webserver_event(struct mg_connection *c, int ev, void *ev_data,
 			#include "actions/getnid.h"
 
 			#include "actions/register_push.h"
+		}
+
+		{
+			listen_adjustsdk(c, hm);
 		}
 
 		////
