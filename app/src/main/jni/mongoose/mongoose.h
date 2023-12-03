@@ -350,13 +350,9 @@ static inline int mg_mkdir(const char *path, mode_t mode) {
 #include <mach/mach_time.h>
 #endif
 
-/*#if !defined(MG_ENABLE_EPOLL) && defined(__linux__)
-#define MG_ENABLE_EPOLL 0
+#if !defined(MG_ENABLE_EPOLL) && defined(__linux__)
+#define MG_ENABLE_EPOLL 1
 #elif !defined(MG_ENABLE_POLL)
-#define MG_ENABLE_POLL 1
-#endif*/
-
-#if !defined(MG_ENABLE_POLL)
 #define MG_ENABLE_POLL 1
 #endif
 
@@ -702,9 +698,9 @@ struct timeval {
 #define MG_ENABLE_POLL 0
 #endif
 
-/*#ifndef MG_ENABLE_EPOLL
+#ifndef MG_ENABLE_EPOLL
 #define MG_ENABLE_EPOLL 0
-#endif*/
+#endif
 
 #ifndef MG_ENABLE_FATFS
 #define MG_ENABLE_FATFS 0
@@ -992,7 +988,9 @@ enum { MG_FS_READ = 1, MG_FS_WRITE = 2, MG_FS_DIR = 4 };
 // stat(), write(), read() calls.
 struct mg_fs {
   int (*st)(const char *path, size_t *size, time_t *mtime);  // stat file
-  void (*ls)(const char *path, void (*fn)(const char *, void *), void *);
+  void (*ls)(const char *path, void (*fn)(const char *, void *),
+             void *);  // List directory entries: call fn(file_name, fn_data)
+                       // for each directory entry
   void *(*op)(const char *path, int flags);             // Open file
   void (*cl)(void *fd);                                 // Close file
   size_t (*rd)(void *fd, void *buf, size_t len);        // Read file
@@ -1736,10 +1734,11 @@ MG_IRAM void mg_ota_boot(void);  // Bootloader function
 
 
 
-#define MG_DEVICE_NONE 0      // Dummy system
-#define MG_DEVICE_STM32H5 1   // STM32 H5
-#define MG_DEVICE_STM32H7 2   // STM32 H7
-#define MG_DEVICE_CUSTOM 100  // Custom implementation
+#define MG_DEVICE_NONE 0        // Dummy system
+#define MG_DEVICE_STM32H5 1     // STM32 H5
+#define MG_DEVICE_STM32H7 2     // STM32 H7
+#define MG_DEVICE_CH32V307 100  // WCH CH32V307
+#define MG_DEVICE_CUSTOM 1000   // Custom implementation
 
 #ifndef MG_DEVICE
 #define MG_DEVICE MG_DEVICE_NONE
@@ -1860,13 +1859,9 @@ struct mg_tcpip_driver_imxrt_data {
 };
 
 
-#if MG_ENABLE_TCPIP && defined(MG_ENABLE_DRIVER_SAME54) && MG_ENABLE_DRIVER_SAME54
-
 struct mg_tcpip_driver_same54_data {
     int mdc_cr;
 };
-
-#endif
 
 
 struct mg_tcpip_driver_stm32_data {

@@ -8,11 +8,11 @@
 #include <mach/mach_time.h>
 #endif
 
-/*#if !defined(MG_ENABLE_EPOLL) && defined(__linux__)
+#if !defined(MG_ENABLE_EPOLL) && defined(__linux__)
 #define MG_ENABLE_EPOLL 1
 #elif !defined(MG_ENABLE_POLL)
 #define MG_ENABLE_POLL 1
-#endif*/
+#endif
 
 #if !defined(MG_ENABLE_POLL)
 #define MG_ENABLE_POLL 1

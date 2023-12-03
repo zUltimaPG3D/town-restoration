@@ -32,9 +32,9 @@
 #define MG_ENABLE_POLL 0
 #endif
 
-/*#ifndef MG_ENABLE_EPOLL
+#ifndef MG_ENABLE_EPOLL
 #define MG_ENABLE_EPOLL 0
-#endif*/
+#endif
 
 #ifndef MG_ENABLE_FATFS
 #define MG_ENABLE_FATFS 0

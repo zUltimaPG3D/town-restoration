@@ -369,7 +369,7 @@ void *hack_thread(void *) {
 	do {
 		unityMaps = KittyMemory::getMapsEndWith("libunity.so");
 	} while (unityMaps.empty());
-	std::thread(&ntsdk_wait).detach();
+	std::thread(&ntsdk_wait).detach(); // runs on a separate thread as to not pause the menu loading (which causes issues!!)
 
 	LOGI("%s has been loaded", (const char *) targetLibName);
 	auto il2cpp_handle = xdl_open("libil2cpp.so", 0);
