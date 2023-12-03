@@ -28,10 +28,14 @@ namespace Menu {
 
 			// ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			
-			if (ImGui::Button("GitHub Repo")) OpenURL("https://github.com/zUltimaPG3D/town-restoration/");
-			if (ImGui::Button("Community Discord")) OpenURL("https://discord.gg/keB3RNumVt");
+			if (ImGui::CollapsingHeader("Information and Links", ImGuiTreeNodeFlags_DefaultOpen)) 
+			{
+				if (ImGui::Button("GitHub Repo")) OpenURL("https://github.com/zUltimaPG3D/town-restoration/");
+				if (ImGui::Button("Community Discord")) OpenURL("https://discord.gg/keB3RNumVt");
+			}
 
 			ImGui::Checkbox("Software Cursor Rendering", &io.MouseDrawCursor);
+
 			if (ImGui::CollapsingHeader("Player data"))
 			{
 				if (ImGui::CollapsingHeader("Server data"))
@@ -45,6 +49,7 @@ namespace Menu {
 				ImGui::SameLine();
 				ImGui::Checkbox("& Restart", &restart_on_clear);
 			}
+
 			if (ImGui::CollapsingHeader("Misc. features"))
 			{
 				ImGui::Checkbox("OwOify", &owoify_enabled);
