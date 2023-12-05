@@ -54,6 +54,9 @@ static void toro_webserver_event(struct mg_connection *c, int ev, void *ev_data,
 			#include "actions/register_push.h"
 		}
 
+		////
+		//// Analytics replacement endpoint listeners
+		////
 		{
 			listen_adjustsdk(c, hm);
 		}
