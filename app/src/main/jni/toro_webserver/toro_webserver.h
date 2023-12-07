@@ -21,6 +21,8 @@ std::thread webserver_thread;
 #include "actions/neptuneapi/login/register_push.h"
 
 #include "actions/linesdk/logging/sendlog.h"
+
+#include "actions/tos.h"
 #pragma endregion
 
 // #define SERVER_DEBUG
@@ -62,7 +64,7 @@ static void toro_webserver_event(struct mg_connection *c, int ev, void *ev_data,
 		////
 		{
 			LineSDK::Logging::SendLog::Listen(c, hm);
-			#include "actions/tos.h"
+			CustomEndpoints::TOS::Listen(c, hm);
 		}
 
 		#ifdef SERVER_DEBUG
