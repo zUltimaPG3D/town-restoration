@@ -2,11 +2,26 @@
 #include <thread>
 #include "../json.hpp"
 
+bool torowebserver_log = true;
+
 #include "actions/default_success.h"
 
 #include "../SWUTS/services/adjust.h"
 
 std::thread webserver_thread;
+
+#pragma region Server Includes
+#include "actions/neptuneapi/info/getClientVersionInfo.h"
+#include "actions/neptuneapi/info/gameServer_list.h"
+#include "actions/neptuneapi/info/language_list.h"
+
+#include "actions/neptuneapi/login/getLoginToken.h"
+#include "actions/neptuneapi/login/policy_agree.h"
+#include "actions/linesdk/auth/getnid.h"
+#include "actions/neptuneapi/login/register_push.h"
+
+#include "actions/linesdk/logging/sendlog.h"
+#pragma endregion
 
 // #define SERVER_DEBUG
 
@@ -14,71 +29,47 @@ static void toro_webserver_event(struct mg_connection *c, int ev, void *ev_data,
 	if (ev == MG_EV_HTTP_MSG) {
 		struct mg_http_message *hm = (struct mg_http_message *) ev_data;
 
-		bool log = true;
+		torowebserver_log = true;
 
 		////
 		//// (Neptune) Game info endpoints
 		////
 		{
-			#include "actions/getClientVersionInfo.h"
-
-			if (mg_http_match_uri(hm, "//api/langCulture/game/useList")) {
-				log = false;
-				LOGI("toro_webserver: Request to useList (langCulture)");
-				nlohmann::json successJson = {
-					{"isSuccess", true},
-					{"data", {
-						{
-							{"langCulture", "en-US"},
-							{"name", "English (en-US)"},
-							{"displayName", "English (en-US)"},
-						},
-					}},
-				};
-				mg_http_reply(c, 200, "", "%s",	successJson.dump().c_str());
-			}
-
-			#include "actions/gameServer_list.h" 
+			NeptuneAPI::Versioning::Listen(c, hm);
+			NeptuneAPI::Servers::Listen(c, hm);
+			NeptuneAPI::Language::Listen(c, hm);
 		}
 		
 		////
 		//// (Neptune) Login endpoints
 		////
 		{
-			#include "actions/getLoginToken.h"
-			
-			#include "actions/policy_agree.h"
-
-			#include "actions/getnid.h"
-
-			#include "actions/register_push.h"
+			NeptuneAPI::Auth::Guest::LoginToken::Listen(c, hm);
+			NeptuneAPI::Auth::Generic::Policy::Listen(c, hm);
+			LineSDK::Auth::GetNID::Listen(c, hm);
+			NeptuneAPI::Auth::Generic::RegisterPushToken::Listen(c, hm);	
 		}
 
 		////
 		//// Analytics replacement endpoint listeners
 		////
 		{
-			listen_adjustsdk(c, hm);
+			SWUTS::Adjust::listen_adjustsdk(c, hm);
 		}
 
 		////
 		//// Misc. endpoints
 		////
 		{
-			if (mg_http_match_uri(hm, "/linegames_log/sendlog")) {
-				log = false;
-				LOGI("toro_webserver: Request to sendlog");
-				mg_http_reply(c, 200, "", "%s",	defaultSuccessJson.dump().c_str());
-			}
-			
+			LineSDK::Logging::SendLog::Listen(c, hm);
 			#include "actions/tos.h"
 		}
 
 		#ifdef SERVER_DEBUG
-		log = true;
+		torowebserver_log = true;
 		#endif
 
-		if (log)
+		if (torowebserver_log)
 		{
 			LOGI("toro_webserver: Generic request to endpoint %s", hm->uri.ptr);
 		}
