@@ -22,7 +22,7 @@ std::thread webserver_thread;
 
 #include "actions/linesdk/logging/sendlog.h"
 
-#include "actions/tos.h"
+#include "actions/custom/tos.h"
 #pragma endregion
 
 // #define SERVER_DEBUG
@@ -78,11 +78,16 @@ static void toro_webserver_event(struct mg_connection *c, int ev, void *ev_data,
 	}
 }
 
+void toro_webserver_log(char ch, void *param) {
+	// stub
+}
+
 void toro_webserver_thread()
 {
 	LOGI("toro_webserver: Webserver thread started (and not listening)");
 	struct mg_mgr mgr;
 	mg_mgr_init(&mgr);
+	// mg_log_set_fn(toro_webserver_log, param);
 	mg_log_set(MG_LL_DEBUG);
 	mg_http_listen(&mgr, HTTP_SERVER_URL, toro_webserver_event, NULL);
 	LOGI("toro_webserver: Webserver thread started (and listening)");
