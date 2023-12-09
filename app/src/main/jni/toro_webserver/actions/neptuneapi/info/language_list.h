@@ -6,9 +6,24 @@ namespace NeptuneAPI
 			{"isSuccess", true},
 			{"data", {
 				{
-					{"langCulture", "en-US"},
-					{"name", "English (en-US)"},
-					{"displayName", "English (en-US)"},
+					{"langCulture", "en_US"},
+					{"name", "영어(미국)"},
+					{"displayName", "English"},
+				},
+				{
+					{"langCulture", "ko_KR"},
+					{"name", "한국어(대한민국)"},
+					{"displayName", "한국어"},
+				},
+				{
+					{"langCulture", "ja_JP"},
+					{"name", "일본어(일본)"},
+					{"displayName", "日本語"},
+				},
+				{
+					{"langCulture", "zh_CN"},
+					{"name", "중국어 간체(중국)"},
+					{"displayName", "中文(简体)"},
 				},
 			}},
 		};
