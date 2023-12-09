@@ -4,6 +4,9 @@
 
 bool torowebserver_log = true;
 
+#define GAME_STATUS "OFFLINE"
+#define MAINTENANCE_MSG ""
+
 #include "actions/default_success.h"
 
 #include "../SWUTS/services/adjust.h"

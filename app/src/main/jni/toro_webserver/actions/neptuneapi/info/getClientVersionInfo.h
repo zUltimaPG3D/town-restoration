@@ -2,12 +2,13 @@ namespace NeptuneAPI
 {
 	namespace Versioning
 	{
+		std::string tos_url = std::string(HTTP_SERVER_URL) + "tos";
 		nlohmann::json clientVersionInfoJson = {
 			{"isSuccess", true},
 			{"data", {
-				{"client_version_status", "ONLINE"}, // 😁
-				{"server_addr", "http://localhost:15151/"},
-				{"patch_addr", "http://localhost:15151/"},
+				{"client_version_status", GAME_STATUS},
+				{"server_addr", HTTP_SERVER_URL},
+				{"patch_addr", HTTP_SERVER_URL},
 				{"countryInfo", {
 					{"countryCd", "US"},
 					{"gdprTargetYn", "N"},
@@ -16,25 +17,25 @@ namespace NeptuneAPI
 					{
 						{"cd", "TERMS_OF_SERVICES"},
 						{"required", true},
-						{"url", "https://localhost:15151/tos"},
+						{"url", tos_url},
 					},
 					{
 						{"cd", "PRIVACY_POLICY"},
 						{"required", true},
-						{"url", "https://localhost:15151/tos"},
+						{"url", tos_url},
 					},
 					{
 						{"cd", "PRIVACY_POLICY_FULLTEXT"},
 						{"required", true},
-						{"url", "https://localhost:15151/tos"},
+						{"url", tos_url},
 					},
 					{
 						{"cd", "USE_OF_PUSH_NOTIFICATIONS"},
 						{"required", false},
-						{"url", "https://localhost:15151/tos"},
+						{"url", tos_url},
 					},
 				}},
-				{"maintenance_msg", ""},
+				{"maintenance_msg", MAINTENANCE_MSG},
 				{"guest_mode_on_yn", "Y"},
 				{"applied_white_yn", "N"},
 				{"customValue", ""},
