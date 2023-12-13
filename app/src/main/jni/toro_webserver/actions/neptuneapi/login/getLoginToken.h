@@ -26,7 +26,7 @@ namespace NeptuneAPI
 							{"needReAgreePolicyYn", "N"},
 						}},
 						{"linkedPlatformIdList", {
-							99
+							PlatformID::Guest
 						}},
 					}},
 				};

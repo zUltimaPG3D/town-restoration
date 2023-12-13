@@ -1,5 +1,6 @@
 // #include "imgui/imgui.h"
 #include "json.hpp"
+#include "Misc/enums.h"
 #include "lib-utils/LitJson.h"
 #include "lib-utils/Delegate.h"
 #include "lib-utils/HttpResponse.h"
@@ -21,8 +22,6 @@ inline void ClearMyData()
 	if (restart_on_clear)
 		exit(-1);
 }
-
-#include "Misc/enums.h"
 
 #include "menu_hook.h"
 #include "Unity/Input.h"
