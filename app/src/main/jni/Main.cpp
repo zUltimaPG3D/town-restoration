@@ -51,13 +51,34 @@ bool emulator = false;
 #include "Misc/JNIHooks.h"
 #include "menu.h"
 
+void java_hooks(JNIEnv* env)
+{
+	// Constants
+	jclass Constants = env->FindClass("com/adjust/sdk/Constants");
+	jfieldID BASE_URL = env->GetStaticFieldID(Constants, "BASE_URL", "Ljava/lang/String;");
+	jfieldID GDPR_URL = env->GetStaticFieldID(Constants, "GDPR_URL", "Ljava/lang/String;");
+	jfieldID SCHEME = env->GetStaticFieldID(Constants, "SCHEME", "Ljava/lang/String;");
+	jfieldID AUTHORITY = env->GetStaticFieldID(Constants, "AUTHORITY", "Ljava/lang/String;");
+	env->SetStaticObjectField(Constants, BASE_URL, jstring(HTTP_SERVER_URL));
+	env->SetStaticObjectField(Constants, GDPR_URL, jstring(HTTP_SERVER_URL));
+	env->SetStaticObjectField(Constants, SCHEME, jstring("")); // hacky fix
+	env->SetStaticObjectField(Constants, AUTHORITY, jstring(HTTP_SERVER_URL));
+	// AdjustFactory
+	jclass AdjustFactory = env->FindClass("com/adjust/sdk/AdjustFactory");
+	jmethodID setBaseUrl = env->GetStaticMethodID(AdjustFactory, "setBaseUrl", "(Ljava/lang/String;)V");
+	jmethodID setGdprUrl = env->GetStaticMethodID(AdjustFactory, "setGdprUrl", "(Ljava/lang/String;)V");
+	env->CallStaticVoidMethod(AdjustFactory, setBaseUrl, jstring(HTTP_SERVER_URL));
+	env->CallStaticVoidMethod(AdjustFactory, setGdprUrl, jstring(HTTP_SERVER_URL));
+}
+
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void * reserved)
 {
 	JNIEnv* env;
 	// updated input method?
 	jvm = vm;
 	vm->GetEnv((void **) &env, JNI_VERSION_1_6);
-
+	
+	java_hooks(env);
 	UnityPlayer_cls = env->FindClass("com/unity3d/player/UnityPlayer");
 	UnityPlayer_CurrentActivity_fid = env->GetStaticFieldID(UnityPlayer_cls,
 															"currentActivity",
