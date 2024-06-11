@@ -5,7 +5,7 @@ Toro and Friends: Onsen Town (english version) patch to reenable game functional
 #### (at least currently...)
 The English release of Onsen Town depended on servers, and an older (yet recent) revival attempt of Onsen Town was also dependent on servers.
 
-For now, this project will do it's best to make the game playable **without** real server requests being passed.
+For now, this project will do its best to make the game playable **without** real server requests being passed.
 
 For a more accurate/secure server, ~~[dewdrop](https://github.com/synzr/dewdrop) is being worked on and~~ [puzzle](https://github.com/synzr/puzzle/) is abandoned yet still an option for at least getting into the main menu.
 
@@ -26,7 +26,7 @@ If there are any issues, contact me @ `55ar.` on Discord and we can discuss the 
 
 The servers for the game run entirely locally, as seen in [toro_webserver.h](app/src/main/jni/toro_webserver/toro_webserver.h), and the [puzzle](https://github.com/synzr/puzzle/) repo mentioned above was used as reference for most endpoints.
 
-The server is in no means secure or accurate to how the real API would work, as it's only purpose is to get the game to run correctly, and it runs entirely locally, so any security exploit found would not affect you at all unless you cause it yourself.
+The server is in no means secure or accurate to how the real API would work, as its only purpose is to get the game to run correctly, and it runs entirely locally, so any security exploit found would not affect you at all unless you cause it yourself.
 
 The server runs on port `15151`, but it can run on any chosen port as long as the `HTTP_SERVER_URL` define in `Main.cpp` is edited to reflect the change.
 
