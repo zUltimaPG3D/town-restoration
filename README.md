@@ -7,7 +7,7 @@ The English release of Onsen Town depended on servers, and an older revival atte
 
 For now, this project will do its best to make the game playable **without** real server requests being passed.
 
-For a more accurate/secure server, ~~[dewdrop](https://github.com/synzr/dewdrop) is being worked on and~~ [puzzle](https://git.gay/synzr-archive/puzzle) is abandoned yet still an option for at least getting into the main menu.
+For a more accurate/secure server, ~~[dewdrop](https://github.com/synzr/dewdrop) is being worked on and~~ [puzzle](https://code.autism.net.ru/synzr-archive/puzzle) is abandoned yet still an option for at least getting into the main menu.
 
 # Build instructions
 If, for whatever reason, ~~you choose not to use the prebuilt releases~~ (releases are not yet available due to this being a work in progress), or you just wanna experiment with adding things to the mod, you can of course build the project yourself!
