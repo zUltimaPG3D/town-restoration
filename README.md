@@ -54,4 +54,4 @@ The server runs on port `15151`, but it can run on any chosen port as long as th
 
 [mongoose](https://github.com/cesanta/mongoose) by cesanta (GPL v2)
 
-[puzzle](https://git.gay/synzr-archive/puzzle) by synzr (Apache 2.0)
+[puzzle](https://code.autism.net.ru/synzr-archive/puzzle) by synzr (Apache 2.0)
