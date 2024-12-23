@@ -32,73 +32,29 @@ namespace Menu {
 			{
 				if (ImGui::Button("GitHub Repo")) OpenURL("https://github.com/zUltimaPG3D/town-restoration/");
 				if (ImGui::Button("Community Discord")) OpenURL("https://discord.gg/keB3RNumVt");
+                ImGui::Text("* town-restoration by sSAR");
+                ImGui::Text("* toro-webserver by sSAR");
+                ImGui::Text("  - partially based on puzzle by synzr");
 			}
 
 			ImGui::Checkbox("Software Cursor Rendering", &io.MouseDrawCursor);
 
-			if (ImGui::CollapsingHeader("Player data"))
-			{
-				if (ImGui::CollapsingHeader("Server data"))
-				{
-					ImGui::Text("TODO");
-				}
-				if (ImGui::Button("Clear data"))
-				{
-					ClearMyData();
-				}
-				ImGui::SameLine();
-				ImGui::Checkbox("& Restart", &restart_on_clear);
-			}
-
 			if (ImGui::CollapsingHeader("Misc. features"))
 			{
-				ImGui::Checkbox("OwOify", &owoify_enabled);
+                ImGui::BeginDisabled(SaveData == nullptr);
+                if (ImGui::Button("Clear Data")) {
+                    old_SaveDataClear(SaveData);
+                }
+                ImGui::EndDisabled();
+				if (ImGui::Checkbox("Unlock FPS", &uncap_fps))
+                {
+                    if (uncap_fps) {
+                        set_vSyncCount(0);
+                        set_targetFrameRate(144);
+                    }
+                }
 			}
 
-			/*ImGui::Text(
-					"This is some useful text.");
-			ImGui::Checkbox("Demo Window",
-							&show_demo_window);
-			ImGui::Checkbox("SL GameCode", &sl_gc);
-			ImGui::Checkbox("Another Window", &show_another_window);
-
-			ImGui::SliderFloat("float", &f, 0.0f,
-							   1.0f);
-			ImGui::ColorEdit3("clear color",
-							  (float *) &clear_color);
-
-			if (ImGui::Button(
-					"Button"))
-				counter++;
-			ImGui::SameLine();
-			ImGui::Text("counter = %d", counter);
-
-			char str1[128] = "Hello, world!";
-			ImGui::InputTextWithHint("input text (w/ hint)", "enter text here", str1,
-									 IM_ARRAYSIZE(str1));
-			ImGui::LabelText("test", "%s", str1);*/
-
-
-			/*const char *items[] = {"Classic Steam Theme", "Light Theme", "Dark Theme"};
-			static int item_current = 0;
-
-			if (ImGui::Combo("Combo", &item_current, items, IM_ARRAYSIZE(items)))
-			{
-				if (item_current == 0) SetClassicSteamHalfLifeTheme();
-				if (item_current == 1) ImGui::StyleColorsLight();
-				if (item_current == 2) ImGui::StyleColorsDark();
-			}*/
-
-			ImGui::End();
-		}
-
-		// 3. Show another simple window.
-		if (show_another_window) {
-			ImGui::Begin("Another Window",
-						 &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-			ImGui::Text("Hello from another window!");
-			if (ImGui::Button("Close Me"))
-				show_another_window = false;
 			ImGui::End();
 		}
 	}

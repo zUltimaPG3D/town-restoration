@@ -21,8 +21,10 @@
 #include "il2cpp/il2cpp_api.h"
 #include "Unity.h"
 #include "il2cpp_stuff.h"
+#include "il2cpp_helpers/easy_api.h"
 
-#define HTTP_SERVER_URL "http://localhost:15151/"
+// Edit this to wherever your server is running
+#define HTTP_SERVER_URL "http://192.168.1.16:15151/"
 
 using namespace KittyMemory;
 
@@ -49,6 +51,18 @@ bool emulator = false;
 #include "ImGuiStuff.h"
 #include "Misc/JNIStuff.h"
 #include "Misc/JNIHooks.h"
+
+void Toast(const char *text, int length = ToastLength::LENGTH_SHORT) {
+	JNIEnv* env = getEnv();
+	jobject context = env->GetStaticObjectField(UnityPlayer_cls, UnityPlayer_CurrentActivity_fid);
+	jstring jstr = env->NewStringUTF(text);
+	jclass toast = env->FindClass("android/widget/Toast");
+	jmethodID methodMakeText = env->GetStaticMethodID(toast, "makeText", "(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;");
+	jobject toastobj = env->CallStaticObjectMethod(toast, methodMakeText, context, jstr, length);
+	jmethodID methodShow = env->GetMethodID(toast, "show", "()V");
+	env->CallVoidMethod(toastobj, methodShow);
+}
+
 #include "menu.h"
 
 void java_hooks(JNIEnv* env)
@@ -63,22 +77,18 @@ void java_hooks(JNIEnv* env)
 		jfieldID GDPR_URL = env->GetStaticFieldID(Constants, "GDPR_URL", "Ljava/lang/String;");
 		jfieldID SCHEME = env->GetStaticFieldID(Constants, "SCHEME", "Ljava/lang/String;");
 		jfieldID AUTHORITY = env->GetStaticFieldID(Constants, "AUTHORITY", "Ljava/lang/String;");
+		std::string SERVER_URL = std::string(HTTP_SERVER_URL);
+		SERVER_URL = SERVER_URL.substr(7); // http://
 		env->SetStaticObjectField(Constants, BASE_URL, env->NewStringUTF(HTTP_SERVER_URL));
 		env->SetStaticObjectField(Constants, GDPR_URL, env->NewStringUTF(HTTP_SERVER_URL));
-		env->SetStaticObjectField(Constants, SCHEME, env->NewStringUTF("")); // hacky fix
-		env->SetStaticObjectField(Constants, AUTHORITY, env->NewStringUTF(HTTP_SERVER_URL));
+		env->SetStaticObjectField(Constants, SCHEME, env->NewStringUTF("http"));
+		env->SetStaticObjectField(Constants, AUTHORITY, env->NewStringUTF(SERVER_URL.c_str()));
 		// AdjustFactory
 		jclass AdjustFactory = env->FindClass("com/adjust/sdk/AdjustFactory");
 		jmethodID setBaseUrl = env->GetStaticMethodID(AdjustFactory, "setBaseUrl", "(Ljava/lang/String;)V");
 		jmethodID setGdprUrl = env->GetStaticMethodID(AdjustFactory, "setGdprUrl", "(Ljava/lang/String;)V");
 		env->CallStaticVoidMethod(AdjustFactory, setBaseUrl, env->NewStringUTF(HTTP_SERVER_URL));
 		env->CallStaticVoidMethod(AdjustFactory, setGdprUrl, env->NewStringUTF(HTTP_SERVER_URL));
-	}
-	///
-	/// Growthy SDK
-	///
-	{
-		jclass GrowthyManager = env->FindClass("com/linecorp/common/android/growthy/GrowthyManager");
 	}
 }
 

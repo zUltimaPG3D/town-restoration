@@ -1,16 +1,21 @@
 # town-restoration
 A Toro and Friends: Onsen Town (english version) patch to re-enable game functionality
 
-# NOT SERVER DEPENDENT!
-#### (at least currently...)
-The English release of Onsen Town depended on servers, and an older revival attempt of Onsen Town was also dependent on servers.
+> ## QUICK SUMMARY
+> The mod needs to be compiled manually, and a separate server needs to be ran by the user.
+> Read the **build instructions** for the mod below, and also the **server instructions** in the [toro-webserver](https://github.com/zUltimaPG3D/toro-webserver) repository (if you're using it).
 
-For now, this project will do its best to make the game playable **without** real server requests being passed.
+# FULLY LOCAL!
+~~This project will do its best to make the game playable **without** real server requests being passed.~~
+
+Due to the increase in complexity with the server implementation, the server no longer runs in parallel with the game, but instead is meant to be ran separately from the device.
+
+To run the game, you need a server recreation ([toro-webserver](https://github.com/zUltimaPG3D/toro-webserver) was made for this project and is probably the best option) that the game can connect to.
 
 For a more accurate/secure server, ~~[dewdrop](https://github.com/synzr/dewdrop) is being worked on and~~ [puzzle](https://code.autism.net.ru/synzr-archive/puzzle) is abandoned yet still an option for at least getting into the main menu.
 
 # Build instructions
-If, for whatever reason, ~~you choose not to use the prebuilt releases~~ (releases are not yet available due to this being a work in progress), or you just wanna experiment with adding things to the mod, you can of course build the project yourself!
+Before building, edit the `Main.cpp` file and replace the `HTTP_SERVER` define with wherever the server is running.
 
 To keep things organized, make a folder named `toro-app` on the root of the project, and put the game's APK in the folder with the name `game.apk`.
 
@@ -27,15 +32,24 @@ invoke-virtual {p0, v0, v1}, Lweb/apache/sax/app;->run(Landroid/content/res/Asse
 
 This is actually a line you have to either comment out or remove, due to it being what starts the AppSolid detections, which make it so the game doesn't start after being edited.
 
-If there are any issues, contact me @ `55ar.` on Discord and we can discuss the issue further.
+Another thing you have to do is go into `res/xml/network_security_config.xml` and add the domain toro-webserver is running on, and this should be what the xml file looks like:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">toropuzz.com</domain>
+        <domain includeSubdomains="true">bx70.bxlocal</domain>
+        <domain includeSubdomains="false">hikari.bexide.jp</domain>
+        <domain includeSubdomains="true">toro.ncucu.com</domain>
+        <domain includeSubdomains="true">192.168.1.16</domain> <!-- This is the IP of the machine the server is running on, assuming it's running on the same network. This can be anything else as long as it's the same as HTTP_SERVER! -->
+    </domain-config>
+</network-security-config>
+```
+
+If there are any issues, contact me (@`55ar.` on Discord) and we can discuss the issue further.
 
 # Game server
-
-The servers for the game run entirely locally, as seen in [toro_webserver.h](app/src/main/jni/toro_webserver/toro_webserver.h), and the [puzzle](https://github.com/synzr/puzzle/) repo mentioned above was used as reference for most endpoints.
-
-The server is in no means secure or accurate to how the real API would work, as its only purpose is to get the game to run correctly, and it runs entirely locally, so any security exploit found would not affect you at all unless you cause it yourself (you can make an issue or pull request related to any issue you find with it though, no problem with that).
-
-The server runs on port `15151`, but it can run on any chosen port as long as the `HTTP_SERVER_URL` define in `Main.cpp` is edited to reflect the change.
+Previously, the game servers were ran completely on the device, but now you need to use a server like [toro-webserver](https://github.com/zUltimaPG3D/toro-webserver) that runs separately from the game.
 
 # Credits, Dependencies and Libraries
 [LGL Mod Menu](https://github.com/LGLTeam/Android-Mod-Menu) by LGLTeam (GPL v3)
