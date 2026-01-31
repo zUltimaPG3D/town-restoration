@@ -27,7 +27,7 @@ namespace Menu {
 				if (ImGui::Button("GitHub Repo")) OpenURL("https://github.com/zUltimaPG3D/town-restoration/");
 				if (ImGui::Button("Community Discord")) OpenURL("https://discord.gg/keB3RNumVt");
                 ImGui::Text("* town-restoration by sSAR");
-                ImGui::Text("* toro-webserver by sSAR");
+                ImGui::Text("* Saturn by sSAR");
                 ImGui::Text("  - partially based on puzzle by synzr");
 			}
 
