@@ -1,29 +1,6 @@
 // #include "imgui/imgui.h"
 #include "Unity/Screen.h"
 
-bool uncap_fps = false;
-bool sl_gc = false;
-
-void* SaveData;
-
-void (*old_SaveDataClear)(void* instance);
-void SaveDataClear(void* instance)
-{
-//    LOGW("SaveDataClear()");
-}
-
-inline void set_vSyncCount(int count)
-{
-    IL2CPP::Method<void, int> SetVSyncCount = IL2CPP::Class("UnityEngine", "QualitySettings").GetMethod("set_vSyncCount");
-    SetVSyncCount(count);
-}
-
-inline void set_targetFrameRate(int fps)
-{
-    IL2CPP::Method<void, int> SetTargetFrameRate = IL2CPP::Class("UnityEngine", "Application").GetMethod("set_targetFrameRate");
-    SetTargetFrameRate(fps);
-}
-
 inline void OpenURL(const std::string& url)
 {
 	((void(*)(il2cppString*))POINTER_NOSEMICOLON("0x19D15D4"))(CreateIl2CppString(url.c_str()));
@@ -40,85 +17,14 @@ il2cppString* GetDomainURL(il2cppString* keyName)
 {
 	il2cppString* s = old_GetDomainURL(keyName);
 	std::string orig = s->getString();
-	LOGW("Redirecting %s to localhost", orig.c_str());
-	if (!sl_gc) return CreateIl2CppString(HTTP_SERVER_URL);
-	return s;
-}
-
-il2cppString* (*old_Encrypt)(il2cppString* uid);
-il2cppString* Encrypt(il2cppString* uid)
-{
-//    il2cppString* ret = old_Encrypt(uid);
-	LOGW("Game tried to encrypt string %s!", uid->getString().c_str());
-	return uid;
-}
-
-il2cppString* (*old_Decrypt)(il2cppString* src);
-il2cppString* Decrypt(il2cppString* src)
-{
-	il2cppString* dec_src = old_Decrypt(src);
-	LOGW("Game tried to decrypt string %s!", src->getString().c_str());
-	LOGW("Decrypted string result: %s", dec_src->getString().c_str());
-	return dec_src;
-}
-
-il2cppString* (*old_GameCode)();
-il2cppString* GameCode()
-{
-	if (sl_gc) return CreateIl2CppString("SL");
-	return old_GameCode();
-}
-
-void (*old_FramerateController_AwakeChild)(void* instance);
-void FramerateController_AwakeChild(void* instance)
-{
-    if (uncap_fps) {
-        set_targetFrameRate(144);
-        set_vSyncCount(0);
-        return;
-    }
-
-    old_FramerateController_AwakeChild(instance);
-}
-
-void* (*old_OpenTask)(void* retstr, void* thiz, il2cppString* messageId, il2cppArray<il2cppString**>* values);
-void* OpenTask(void* retstr, void* thiz, il2cppString* messageId, il2cppArray<il2cppString**>* values)
-{
-    LOGW("OpenTask(\"%s\")", messageId->getString().c_str());
-    return old_OpenTask(retstr, thiz, messageId, values);
-}
-
-void (*old_SaveData_ctor)(void* thiz);
-void SaveData_ctor(void* thiz)
-{
-    SaveData = thiz;
-    old_SaveData_ctor(thiz);
-}
-
-bool (*old_get_IsFirstplay)(void* thiz);
-bool get_IsFirstplay(void* thiz)
-{
-    return true;
+	LOGW("Redirecting %s to %s", orig.c_str(), HTTP_SERVER_URL);
+	return CreateIl2CppString(HTTP_SERVER_URL);
 }
 
 void hooks()
 {
 	IL2CPP::Class CommonAPI = IL2CPP::Class("NTCore", "CommonAPI");
-
 	HOOK_DIRECT(CommonAPI.GetMethod("GetDomainURL").GetOffset(), GetDomainURL, old_GetDomainURL);
-
-	IL2CPP::Property<il2cppString*> CommonAPI_GameCode = CommonAPI.GetProperty("GameCode");
-	HOOK_DIRECT(CommonAPI_GameCode.getter.GetOffset(), GameCode, old_GameCode);
-
-	IL2CPP::Class Crypt = IL2CPP::Class("BX.App.Util", "Crypt");
-	HOOK_DIRECT(Crypt.GetMethod("Encrypt").GetOffset(), Encrypt, old_Encrypt);
-	HOOK_DIRECT(Crypt.GetMethod("Decrypt").GetOffset(), Decrypt, old_Decrypt);
-
-	HOOK("0x28638F8", FramerateController_AwakeChild, old_FramerateController_AwakeChild);
-	HOOK("0x2ACA030", OpenTask, old_OpenTask);
-	HOOK("0x29CBA6C", SaveDataClear, old_SaveDataClear);
-	HOOK("0x29CBD6C", SaveData_ctor, old_SaveData_ctor);
-	HOOK("0x285BC70", get_IsFirstplay, old_get_IsFirstplay);
 }
 
 void *hack_thread(void *) {

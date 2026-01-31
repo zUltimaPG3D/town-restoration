@@ -65,41 +65,13 @@ void Toast(const char *text, int length = ToastLength::LENGTH_SHORT) {
 
 #include "menu.h"
 
-void java_hooks(JNIEnv* env)
-{
-	///
-	/// Adjust SDK
-	///
-	{
-		// Constants
-		jclass Constants = env->FindClass("com/adjust/sdk/Constants");
-		jfieldID BASE_URL = env->GetStaticFieldID(Constants, "BASE_URL", "Ljava/lang/String;");
-		jfieldID GDPR_URL = env->GetStaticFieldID(Constants, "GDPR_URL", "Ljava/lang/String;");
-		jfieldID SCHEME = env->GetStaticFieldID(Constants, "SCHEME", "Ljava/lang/String;");
-		jfieldID AUTHORITY = env->GetStaticFieldID(Constants, "AUTHORITY", "Ljava/lang/String;");
-		std::string SERVER_URL = std::string(HTTP_SERVER_URL);
-		SERVER_URL = SERVER_URL.substr(7); // http://
-		env->SetStaticObjectField(Constants, BASE_URL, env->NewStringUTF(HTTP_SERVER_URL));
-		env->SetStaticObjectField(Constants, GDPR_URL, env->NewStringUTF(HTTP_SERVER_URL));
-		env->SetStaticObjectField(Constants, SCHEME, env->NewStringUTF("http"));
-		env->SetStaticObjectField(Constants, AUTHORITY, env->NewStringUTF(SERVER_URL.c_str()));
-		// AdjustFactory
-		jclass AdjustFactory = env->FindClass("com/adjust/sdk/AdjustFactory");
-		jmethodID setBaseUrl = env->GetStaticMethodID(AdjustFactory, "setBaseUrl", "(Ljava/lang/String;)V");
-		jmethodID setGdprUrl = env->GetStaticMethodID(AdjustFactory, "setGdprUrl", "(Ljava/lang/String;)V");
-		env->CallStaticVoidMethod(AdjustFactory, setBaseUrl, env->NewStringUTF(HTTP_SERVER_URL));
-		env->CallStaticVoidMethod(AdjustFactory, setGdprUrl, env->NewStringUTF(HTTP_SERVER_URL));
-	}
-}
-
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void * reserved)
 {
 	JNIEnv* env;
 	// updated input method?
 	jvm = vm;
 	vm->GetEnv((void **) &env, JNI_VERSION_1_6);
-	
-	java_hooks(env);
+
 	UnityPlayer_cls = env->FindClass("com/unity3d/player/UnityPlayer");
 	UnityPlayer_CurrentActivity_fid = env->GetStaticFieldID(UnityPlayer_cls,
 															"currentActivity",
