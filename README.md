@@ -2,17 +2,13 @@
 A Toro and Friends: Onsen Town (english version) patch to re-enable game functionality
 
 > ## QUICK SUMMARY
-> The mod needs to be compiled manually, and a separate server needs to be ran by the user.
-> Read the **build instructions** for the mod below, and also the **server instructions** in the [toro-webserver](https://github.com/zUltimaPG3D/toro-webserver) repository (if you're using it).
+> To self host the game, the mod needs to be compiled manually, and a separate server needs to be ran by the user.
+> Read the **build instructions** for the mod below, and also the **server instructions** in the [Saturn](https://github.com/zUltimaPG3D/Saturn) repository (if you're using it).
 
-# FULLY LOCAL!
-~~This project will do its best to make the game playable **without** real server requests being passed.~~
-
+# Server Dependency
 Due to the increase in complexity with the server implementation, the server no longer runs in parallel with the game, but instead is meant to be ran separately from the device.
 
-To run the game, you need a server recreation ([toro-webserver](https://github.com/zUltimaPG3D/toro-webserver) was made for this project and is probably the best option) that the game can connect to.
-
-For a more accurate/secure server, ~~[dewdrop](https://github.com/synzr/dewdrop) is being worked on and~~ [puzzle](https://code.autism.net.ru/synzr-archive/puzzle) is abandoned yet still an option for at least getting into the main menu.
+To run the game, you need a server recreation ([Saturn](https://github.com/zUltimaPG3D/Saturn) is the best option for the time being) that the game can connect to.
 
 # Build instructions
 Before building, edit the `Main.cpp` file and replace the `HTTP_SERVER` define with wherever the server is running.
@@ -32,7 +28,7 @@ invoke-virtual {p0, v0, v1}, Lweb/apache/sax/app;->run(Landroid/content/res/Asse
 
 This is actually a line you have to either comment out or remove, due to it being what starts the AppSolid detections, which make it so the game doesn't start after being edited.
 
-Another thing you have to do is go into `res/xml/network_security_config.xml` and add the domain toro-webserver is running on, and this should be what the xml file looks like:
+Another thing you have to do is go into `res/xml/network_security_config.xml` and add the domain Saturn is running on, and this should be what the xml file looks like:
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
@@ -41,15 +37,12 @@ Another thing you have to do is go into `res/xml/network_security_config.xml` an
         <domain includeSubdomains="true">bx70.bxlocal</domain>
         <domain includeSubdomains="false">hikari.bexide.jp</domain>
         <domain includeSubdomains="true">toro.ncucu.com</domain>
-        <domain includeSubdomains="true">192.168.1.16</domain> <!-- This is the IP of the machine the server is running on, assuming it's running on the same network. This can be anything else as long as it's the same as HTTP_SERVER! -->
+        <domain includeSubdomains="true">192.168.1.16</domain> <!-- This can be anything else as long as it's the same as HTTP_SERVER! -->
     </domain-config>
 </network-security-config>
 ```
 
 If there are any issues, contact me (@`55ar.` on Discord) and we can discuss the issue further.
-
-# Game server
-Previously, the game servers were ran completely on the device, but now you need to use a server like [toro-webserver](https://github.com/zUltimaPG3D/toro-webserver) that runs separately from the game.
 
 # Credits, Dependencies and Libraries
 [LGL Mod Menu](https://github.com/LGLTeam/Android-Mod-Menu) by LGLTeam (GPL v3)
