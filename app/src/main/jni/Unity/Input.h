@@ -53,7 +53,7 @@ namespace UnityEngine
 			{
 				ImGuiIO &io = ImGui::GetIO();
 				float x = _touch.m_Position.X;
-				float y = static_cast<float>(std::round(UnityEngine::Screen::Height())) - _touch.m_Position.Y;
+				float y = static_cast<float>(round(UnityEngine::Screen::Height())) - _touch.m_Position.Y;
 
 				if (_touch.m_Phase == TouchPhase::Began)
 				{
