@@ -29,6 +29,10 @@ void hook_menu_stuff()
 		LOGE("Cannot load symbol 'eglSwapBuffers': %s", dlsym_error);
 	} else
 	{
-		hook(eglSwapBuffers, (void *) new_eglSwapBuffers, (void **) &old_eglSwapBuffers);
+	    if (old_eglSwapBuffers == nullptr) {
+			LOGE("'eglSwapBuffers' is null!");
+		} else {
+	        hook(eglSwapBuffers, (void *) new_eglSwapBuffers, (void **) &old_eglSwapBuffers);
+		}
 	}
 }
